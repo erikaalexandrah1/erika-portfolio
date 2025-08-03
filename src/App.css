@@ -1,13 +1,14 @@
-/* index.css o App.css */
+@import "tailwindcss";
+
 
 html, body, #root {
   margin: 0;
   padding: 0;
   height: 100%;
   width: 100%;
-  overflow: hidden;
-  background-color: #000; /* o cualquier fondo que quieras */
+  background-color: #000; 
   font-family: 'Inter', sans-serif;
+  overflow: hidden; 
 }
 
 canvas {
