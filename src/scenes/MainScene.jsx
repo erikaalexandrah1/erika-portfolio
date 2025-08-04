@@ -1,54 +1,75 @@
-import { useRef } from 'react'
-import { useFrame } from '@react-three/fiber'
-import { Float, Sphere, MeshDistortMaterial, Stars } from '@react-three/drei'
+import { useRef, useMemo } from 'react'
+import { OrbitControls } from '@react-three/drei'
+import * as THREE from 'three'
 
-export default function MainScene() {
-  const group = useRef()
+export default function DesertScene() {
+  const terrainRef = useRef()
 
-  useFrame((state, delta) => {
-    group.current.rotation.y += delta * 0.05
-  })
+  const geometry = useMemo(() => {
+    const geo = new THREE.PlaneGeometry(60, 60, 40, 40) 
+    geo.rotateX(-Math.PI / 2)
+
+    const pos = geo.attributes.position
+    for (let i = 0; i < pos.count; i++) {
+      const x = pos.getX(i)
+      const z = pos.getZ(i)
+      const y =
+        Math.sin(x * 0.2) * 0.8 +
+        Math.cos(z * 0.2) * 0.6 +
+        Math.random() * 0.3
+      pos.setY(i, y)
+    }
+
+    pos.needsUpdate = true
+    geo.computeVertexNormals()
+    return geo
+  }, [])
 
   return (
-    <group ref={group}>
-      {/* Estrellas como fondo retro */}
-      <Stars radius={50} depth={30} count={5000} factor={4} fade speed={1} />
+    <>
+      {/* Cielo y niebla */}
+      <color attach="background" args={['#b2966d']} />
+      <fog attach="fog" args={['#b2966d', 10, 50]} />
 
-      {/* Esfera vaporwave flotante */}
-      <Float speed={1.5} rotationIntensity={1.2} floatIntensity={1.3}>
-        <Sphere args={[1.7, 64, 64]} position={[0, 0, -5]}>
-          <MeshDistortMaterial
-            color="#ff00ff"
-            distort={0.6}
-            speed={3}
-            emissive="#ff00ff"
-            emissiveIntensity={1}
-            roughness={0.2}
-            metalness={0.8}
-          />
-        </Sphere>
-      </Float>
+      {/* Terreno */}
+      <mesh ref={terrainRef} geometry={geometry} receiveShadow>
+        <meshStandardMaterial color="#a96e42" flatShading />
+      </mesh>
 
-      {/* Esferas tenues flotantes (neón glow) */}
-      {[...Array(6)].map((_, i) => (
-        <Sphere
+      {/* Pirámides */}
+      {[...Array(10)].map((_, i) => (
+        <mesh
           key={i}
-          args={[0.25, 32, 32]}
           position={[
-            Math.sin(i) * 3,
-            Math.cos(i * 2) * 2,
-            -3 + i * 0.4,
+            Math.random() * 50 - 25,
+            0.5,
+            Math.random() * 50 - 25,
           ]}
+          rotation={[0, Math.random() * Math.PI * 2, 0]}
         >
-          <meshStandardMaterial
-            color="#00ffff"
-            emissive="#00ffff"
-            emissiveIntensity={0.6}
-            transparent
-            opacity={0.2}
-          />
-        </Sphere>
+          <coneGeometry args={[1, 2, 4]} />
+          <meshStandardMaterial color="#5c3b22" flatShading />
+        </mesh>
       ))}
-    </group>
+
+      {/* Sol */}
+      <mesh position={[-20, 5, -30]}>
+        <sphereGeometry args={[2, 32, 32]} />
+        <meshBasicMaterial color="#ffb3b3" />
+      </mesh>
+
+      {/* Luces */}
+      <ambientLight intensity={0.6} />
+      <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
+
+      {/* Cámara */}
+      <OrbitControls
+        target={[0, 2, 0]}
+        enableZoom={false}
+        enablePan={false}
+        minPolarAngle={Math.PI / 3}
+        maxPolarAngle={Math.PI / 3}
+      />
+    </>
   )
 }
