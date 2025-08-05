@@ -1,7 +1,7 @@
 import './app.css' 
 import { Canvas } from '@react-three/fiber'
 import Navbar from './components/Navbar'
-import MainScene from './scenes/MainScene'
+import BeachScene from './scenes/BeachScene'
 
 function App() {
   return (
@@ -11,7 +11,7 @@ function App() {
         <ambientLight intensity={0.1} />
         <pointLight position={[0, 0, 5]} intensity={1.5} color="#ff00ff" />
         <pointLight position={[-4, -2, -5]} intensity={1.2} color="#00ffff" />
-        <MainScene />
+        <BeachScene />
       </Canvas>
     </>
   )
