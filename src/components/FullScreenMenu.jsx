@@ -49,7 +49,7 @@ function FullscreenMenu({ open, onClose }) {
   return (
     <>
       <div
-        className={`fixed top-0 left-0 w-full h-screen bg-black transition-opacity duration-500 ease-in-out ${
+        className={`fixed top-0 left-0 w-full h-screen transition-opacity duration-500 ease-in-out ${
           open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         } z-40 flex flex-col justify-center px-8 md:px-20`}
       >
