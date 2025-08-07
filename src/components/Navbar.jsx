@@ -1,14 +1,41 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import FullscreenMenu from "./FullScreenMenu";
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const clickSound = useRef(null);
+
+  // Cargar el sonido en el montaje
+  useEffect(() => {
+    clickSound.current = new Audio("/sounds/hover2.mp3");
+    clickSound.current.volume = 0.4;
+    clickSound.current.load();
+  }, []);
+
+  const playClickSound = () => {
+    if (clickSound.current) {
+      clickSound.current.currentTime = 0;
+      clickSound.current.play().catch((e) =>
+        console.warn("Sound play prevented:", e)
+      );
+    }
+  };
+
+  const handleLogoClick = () => {
+    playClickSound();
+    window.location.href = "/";
+  };
+
+  const handleMenuToggle = () => {
+    playClickSound();
+    setMenuOpen(!menuOpen);
+  };
 
   return (
     <>
       <header className="fixed top-0 left-0 w-full z-50 px-6 py-4 flex justify-between items-center text-white">
         {/* Logo + nombre */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 cursor-pointer" onClick={handleLogoClick}>
           <img src="/logo.svg" alt="Logo" className="h-6" />
           <span className="text-md font-bold tracking-wide uppercase">
             Erika Hernández Zurilla
@@ -17,7 +44,7 @@ function Navbar() {
 
         {/* Botón menú (hamburger / close) */}
         <button
-          onClick={() => setMenuOpen(!menuOpen)}
+          onClick={handleMenuToggle}
           className="p-3 z-50 relative text-white"
           aria-label="Toggle menu"
         >
