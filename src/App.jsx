@@ -1,20 +1,22 @@
-import './app.css' 
-import { Canvas } from '@react-three/fiber'
-import Navbar from './components/Navbar'
-import BeachScene from './scenes/BeachScene'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./scenes/Home";
+import Projects from "./scenes/Projects";
+import About from "./scenes/About";
+import Resources from "./scenes/Resources";
+import Contact from "./scenes/Contact";
 
 function App() {
   return (
-    <>
-      <Navbar />
-      {/* <Canvas camera={{ position: [0, 0, 6], fov: 50 }}>
-        <ambientLight intensity={0.1} />
-        <pointLight position={[0, 0, 5]} intensity={1.5} color="#ff00ff" />
-        <pointLight position={[-4, -2, -5]} intensity={1.2} color="#00ffff" />
-        <BeachScene />
-      </Canvas> */}
-    </>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/projects" element={<Projects />} />
+        <Route path="/resources" element={<Resources />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
