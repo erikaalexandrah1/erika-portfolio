@@ -5,7 +5,9 @@ function FullscreenMenu({ open, onClose }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [indicatorTop, setIndicatorTop] = useState(0);
   const itemRefs = useRef([]);
+  const hoverSound = useRef(null);
 
+  // ESC key to close
   useEffect(() => {
     if (!open) return;
     const listener = (e) => {
@@ -15,13 +17,20 @@ function FullscreenMenu({ open, onClose }) {
     return () => window.removeEventListener("keydown", listener);
   }, [open, onClose]);
 
+  // Posición de la línea animada
   useEffect(() => {
-    // Si el ref del ítem activo existe, ajustamos su posición
     const el = itemRefs.current[activeIndex];
     if (el) {
       setIndicatorTop(el.offsetTop);
     }
   }, [activeIndex, open]);
+
+  // Carga del sonido
+  useEffect(() => {
+    hoverSound.current = new Audio("/sounds/hover.mp3");
+    hoverSound.current.volume = 0.3;
+    hoverSound.current.load();
+  }, []);
 
   return (
     <div
@@ -36,7 +45,7 @@ function FullscreenMenu({ open, onClose }) {
       <div className="relative">
         {/* Línea lateral animada */}
         <div
-          className="absolute left-0 w-1 h-14 bg-white transition-all duration-300"
+          className="absolute left-0 w-2 h-14 bg-white transition-all duration-300"
           style={{ top: `${indicatorTop}px` }}
         ></div>
 
@@ -45,8 +54,16 @@ function FullscreenMenu({ open, onClose }) {
             <a
               key={item.anchor}
               href={item.anchor}
-              onMouseEnter={() => setActiveIndex(i)}
               ref={(el) => (itemRefs.current[i] = el)}
+              onMouseEnter={() => {
+                setActiveIndex(i);
+                if (hoverSound.current) {
+                  hoverSound.current.currentTime = 0;
+                  hoverSound.current.play().catch((e) => {
+                    console.warn("Sound play prevented:", e);
+                  });
+                }
+              }}
               className={`flex flex-col items-start transition-transform duration-300 origin-left ${
                 activeIndex === i
                   ? "text-white scale-105"

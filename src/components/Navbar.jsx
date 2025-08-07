@@ -10,7 +10,7 @@ function Navbar() {
         {/* Logo + nombre */}
         <div className="flex items-center gap-3">
           <img src="/logo.svg" alt="Logo" className="h-6" />
-          <span className="text-lg font-bold tracking-wide uppercase">
+          <span className="text-md font-bold tracking-wide uppercase">
             Erika Hernández Zurilla
           </span>
         </div>
