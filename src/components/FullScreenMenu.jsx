@@ -49,7 +49,7 @@ function FullscreenMenu({ open, onClose }) {
   return (
     <>
       <div
-        className={`fixed top-0 left-0 w-full h-screen transition-opacity duration-500 ease-in-out ${
+        className={`fixed top-0 left-0 w-full h-screen bg-black transition-opacity duration-500 ease-in-out ${
           open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         } z-40 flex flex-col justify-center px-8 md:px-20`}
       >
@@ -70,23 +70,28 @@ function FullscreenMenu({ open, onClose }) {
                 key={item.anchor}
                 ref={(el) => (itemRefs.current[i] = el)}
                 onMouseEnter={() => {
-                  setActiveIndex(i);
-                  if (hoverSound.current) {
+                    setActiveIndex(i);
+                    if (hoverSound.current) {
                     hoverSound.current.currentTime = 0;
                     hoverSound.current.play().catch((e) => {
-                      console.warn("Sound play prevented:", e);
+                        console.warn("Sound play prevented:", e);
                     });
-                  }
+                    }
                 }}
                 onClick={() => handleNavigation(item.anchor)}
-                className={`text-left flex flex-col items-start transition-transform duration-300 origin-left ${
-                  activeIndex === i
-                    ? "text-white scale-105"
-                    : "text-white/30 hover:text-white/60"
-                }`}
-              >
-                <div className="font-extrabold">{item.label}</div>
-              </button>
+                className="inline-flex items-center w-fit"
+                >
+                <div
+                    className={`font-extrabold text-left transition-transform duration-300 origin-left cursor-pointer ${
+                    activeIndex === i
+                        ? "text-white scale-105"
+                        : "text-white/30 hover:text-white/60"
+                    }`}
+                >
+                    {item.label}
+                </div>
+            </button>
+
             ))}
           </nav>
         </div>
