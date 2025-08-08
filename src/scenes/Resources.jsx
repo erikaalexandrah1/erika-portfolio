@@ -13,23 +13,101 @@ const ytId = (url) => { try { const u = new URL(url); if (u.hostname.includes("y
 export default function Resources() {
   const viewportRef = useRef(null);
   const sectionRefs = useRef(Array.from({ length: SECTIONS.length + 1 }, () => null));
-  const scrollTo = useCallback((i) => sectionRefs.current[i]?.scrollIntoView({ behavior: "smooth", block: "start" }), []);
+  const audioRef = useRef(null);
 
-  const PillarCard = ({ title, subtitle, onClick, delay = 0 }) => (
-    <motion.button {...enterCard(delay)} onClick={onClick} className="pillar-card" aria-label={`${title}: ${subtitle}`}>
-      <div className="pillar-card__inner"><h3>{title}</h3><p>{subtitle}</p></div><div className="pillar-card__arrow" aria-hidden>→</div>
+  // 🎵 música de fondo (autoplay)
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.volume = 0.1;
+      audio.play().catch((err) => console.warn("Autoplay blocked:", err));
+    }
+  }, []);
+
+  // 🔊 hover sfx para las 4 tarjetas
+  const hoverSfxRef = useRef(null);
+  const lastPlayRef = useRef(0);
+  useEffect(() => {
+    hoverSfxRef.current = new Audio("/sounds/hover.mp3");
+    hoverSfxRef.current.volume = 0.35;
+    hoverSfxRef.current.preload = "auto";
+  }, []);
+  const playHover = useCallback(() => {
+    const now = performance.now();
+    if (now - lastPlayRef.current < 120) return; 
+    lastPlayRef.current = now;
+    const a = hoverSfxRef.current;
+    if (!a) return;
+    try { a.currentTime = 0; a.play(); } catch {}
+  }, []);
+
+  const scrollTo = useCallback((i) => {
+    sectionRefs.current[i]?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
+
+  const PillarCard = ({ title, subtitle, onClick, onHover, delay = 0 }) => (
+    <motion.button
+        {...enterCard(delay)}
+        onClick={onClick}
+        onMouseEnter={onHover}
+        onFocus={onHover} // accesible con teclado
+        whileHover={{ scale: 1.04 }} // pequeño crecimiento
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+        className="pillar-card"
+        aria-label={`${title}: ${subtitle}`}
+    >
+        <div className="pillar-card__inner">
+        <h3>{title}</h3>
+        <p>{subtitle}</p>
+        </div>
+        <div className="pillar-card__arrow" aria-hidden>→</div>
     </motion.button>
-  );
+    );
 
   const VideoMiniCard = ({ title, url, length, delay = 0 }) => {
-    const id = ytId(url), thumb = id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : undefined;
+    const id = ytId(url);
+    const thumb = id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : undefined;
+    const hoverSound = useRef(null);
+
+    useEffect(() => {
+        hoverSound.current = new Audio("/sounds/hover.mp3");
+        hoverSound.current.volume = 0.35; 
+        hoverSound.current.load();
+    }, []);
+
+    const playHoverSound = () => {
+        if (hoverSound.current) {
+        hoverSound.current.currentTime = 0;
+        hoverSound.current.play().catch(() => {});
+        }
+    };
+
     return (
-      <motion.a href={url} target="_blank" rel="noreferrer" className="video" {...anim(18, 0.06 * delay)} aria-label={`${title} (${length})`}>
-        <div className="video__thumb">{thumb ? <img src={thumb} alt={title} loading="lazy" /> : <div className="video__thumb--placeholder" />}<span className="video__badge">{length}</span></div>
-        <div className="video__title" title={title}>{title}</div>
-      </motion.a>
+        <motion.a
+        href={url}
+        target="_blank"
+        rel="noreferrer"
+        className="video"
+        {...anim(18, 0.06 * delay)}
+        whileHover={{ scale: 1.03 }}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+        onMouseEnter={playHoverSound}
+        >
+        <div className="video__thumb">
+            {thumb ? (
+            <img src={thumb} alt={title} loading="lazy" />
+            ) : (
+            <div className="video__thumb--placeholder" />
+            )}
+            <span className="video__badge">{length}</span>
+        </div>
+        <div className="video__title" title={title}>
+            {title}
+        </div>
+        </motion.a>
     );
-  };
+    };
+
 
   const ScrollHint = ({ label = "Keep scrolling" }) => (
     <motion.div className="scroll-hint" initial={{ opacity: 0 }} animate={{ opacity: 0.85, y: [0, 8, 0] }} transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }} aria-hidden>
@@ -37,16 +115,14 @@ export default function Resources() {
     </motion.div>
   );
 
-  useEffect(() => {
-    const el = viewportRef.current; if (!el) return;
-    const noop = () => {}; el.addEventListener("touchmove", noop, { passive: true });
-    return () => el.removeEventListener("touchmove", noop);
-  }, []);
-
   return (
     <div className="resources">
       <div className="resources__navbar"><Navbar /></div>
       <div className="resources__bg" aria-hidden />
+
+      {/* música de fondo */}
+      <audio ref={audioRef} src="/sounds/isolated.mp3" loop autoPlay preload="auto" />
+
       <div ref={viewportRef} className="resources__viewport">
         {/* Overview */}
         <section ref={(el) => (sectionRefs.current[0] = el)} className="section section--intro snap-start">
@@ -56,11 +132,20 @@ export default function Resources() {
               <h2 className="intro__title">Resources</h2>
               <p className="intro__subtitle">Essential resources to master the 4 pillars of software engineering: Databases, Data Analysis, Backend, and Frontend.</p>
             </motion.div>
+
             <div className="intro__grid">
               {SECTIONS.map((s, i) => (
-                <PillarCard key={s.key} title={s.title} subtitle={s.subtitle} onClick={() => scrollTo(i + 1)} delay={0.12 * i} />
+                <PillarCard
+                  key={s.key}
+                  title={s.title}
+                  subtitle={s.subtitle}
+                  onClick={() => scrollTo(i + 1)}
+                  onHover={playHover}
+                  delay={0.12 * i}
+                />
               ))}
             </div>
+
             <ScrollHint />
           </div>
         </section>
@@ -73,7 +158,9 @@ export default function Resources() {
               <motion.h3 className="panel__subtitle" {...anim(14, 0.1)}>{s.subtitle}</motion.h3>
               <motion.p className="panel__description" {...anim(12, 0.15)}>{s.description}</motion.p>
               <div className="panel__videos">
-                {s.videos.map((v, idx) => <VideoMiniCard key={v.url} title={v.title} url={v.url} length={v.length} delay={idx} />)}
+                {s.videos.map((v, idx) => (
+                  <VideoMiniCard key={v.url} title={v.title} url={v.url} length={v.length} delay={idx} />
+                ))}
               </div>
               <div className="panel__nav">
                 {i > 0 ? <button className="panel__btn" onClick={() => scrollTo(i)}>← Back</button> : <span />}
@@ -82,6 +169,7 @@ export default function Resources() {
             </motion.div>
           </section>
         ))}
+
         <div className="spacer-10vh" />
       </div>
     </div>
