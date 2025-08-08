@@ -53,10 +53,17 @@ function FullscreenMenu({ open, onClose }) {
           open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         } z-40 flex flex-col justify-center px-8 md:px-20`}
       >
+        {/* Radial background on the left */}
+        <div className="absolute inset-0 z-[-1] pointer-events-none">
+          <div className="w-full h-full bg-[radial-gradient(circle_at_left,_rgba(0,0,0,0.6)_0%,_transparent_70%)]"></div>
+        </div>
+
+        {/* Description */}
         <div className="text-sm text-white/50 mb-4">
           {activeIndex + 1}/{menuItems.length} - {menuItems[activeIndex].description}
         </div>
 
+        {/* Indicator + nav */}
         <div className="relative">
           {/* Animated side line */}
           <div
@@ -97,7 +104,7 @@ function FullscreenMenu({ open, onClose }) {
         </div>
       </div>
 
-      {/* Fullscreen shader transition */}
+      {/* Shader scene transition */}
       <SceneTransition active={transitioning} onFinish={() => {}} />
     </>
   );
