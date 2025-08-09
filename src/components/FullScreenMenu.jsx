@@ -166,7 +166,17 @@ function FullscreenMenu({ open, onClose }) {
         </div>
       </div>
 
-      <SceneTransition active={transitioning} onFinish={() => {}} />
+
+        <SceneTransition
+            active={transitioning}
+            onFinish={() => {}}
+            a="#0b0b0b"
+            b="#07070a"
+            r1="rgba(58,96,255,0.15)"
+            r2="rgba(255,112,164,0.10)"
+            r3="rgba(0,220,180,0.08)"
+            starColor="#eef6ff"
+        />
     </>
   );
 }

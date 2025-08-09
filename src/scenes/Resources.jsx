@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { motion, useScroll, useTransform, useMotionTemplate } from "framer-motion";
+import { Canvas } from "@react-three/fiber";
 import Navbar from "../components/Navbar";
+import OrbitalArcs from "../components/OrbitalArcs";
 import { SECTIONS } from "../data/resourcesSections";
 
 // Paletas por pilar (bg dinámico)
@@ -53,7 +55,7 @@ export default function ResourcesCinematic() {
     sectionRefs.current[i]?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
-  // ✅ FIX: montar el IntersectionObserver cuando los nodos existen
+  // IntersectionObserver
   useEffect(() => {
     const root = viewportRef.current;
     if (!root) return;
@@ -70,10 +72,7 @@ export default function ResourcesCinematic() {
           }
         });
       },
-      {
-        root,
-        threshold: [0.3, 0.5, 0.7], // más sensible al scroll
-      }
+      { root, threshold: [0.3, 0.5, 0.7] }
     );
 
     els.forEach((el) => io.observe(el));
@@ -85,7 +84,7 @@ export default function ResourcesCinematic() {
     [active]
   );
 
-  // Timeline derecha (usa `active` y re-renderiza)
+  // Timeline
   const Timeline = () => (
     <div className="hidden md:flex fixed right-6 top-1/2 -translate-y-1/2 z-30 flex-col items-center gap-3">
       {[0, ...SECTIONS.map((_, i) => i + 1)].map((i) => {
@@ -105,39 +104,6 @@ export default function ResourcesCinematic() {
       })}
     </div>
   );
-
-  // Overview cards (hover magnético)
-  const PillarCard = ({ title, subtitle, onClick, delay = 0 }) => {
-    const ref = useRef(null);
-    const onMove = (e) => {
-      const el = ref.current;
-      if (!el) return;
-      const r = el.getBoundingClientRect();
-      const x = ((e.clientX - r.left) / r.width - 0.5) * 8;
-      const y = ((e.clientY - r.top) / r.height - 0.5) * 8;
-      el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-    };
-    const onLeave = () => {
-      const el = ref.current;
-      if (el) el.style.transform = `translate3d(0,0,0)`;
-    };
-
-    return (
-      <motion.button
-        {...enterCard(delay)}
-        onClick={onClick}
-        onMouseMove={onMove}
-        onMouseLeave={onLeave}
-        className="relative border border-white/10 bg-white/5 hover:bg-white/10 backdrop-blur rounded-2xl p-4 text-left transition-colors will-change-transform"
-      >
-        <div ref={ref}>
-          <h3 className="text-lg font-extrabold">{title}</h3>
-          <p className="text-white/60 text-sm">{subtitle}</p>
-        </div>
-        <div className="absolute right-3 bottom-2 text-white/50">→</div>
-      </motion.button>
-    );
-  };
 
   const VideoMiniCard = ({ title, url, length, delay = 0 }) => {
     const id = ytId(url),
@@ -167,7 +133,6 @@ export default function ResourcesCinematic() {
     );
   };
 
-  // Máscara radial (spotlight) animada con template
   const SectionShell = ({ index, children }) => {
     const localRef = useRef(null);
     const { scrollYProgress } = useScroll({
@@ -202,7 +167,22 @@ export default function ResourcesCinematic() {
 
   return (
     <div className="relative w-screen h-screen text-white overflow-hidden">
-      {/* Fondo dinámico */}
+      {/* ===== Capa 0: Canvas fijo con OrbitalArcs (no interfiere con scroll) ===== */}
+      <div className="fixed inset-0 -z-20 pointer-events-none">
+        <Canvas
+          gl={{ alpha: true, antialias: true, powerPreference: "high-performance" }}
+          dpr={[1, 1.8]}                  // limita DPR por rendimiento
+          camera={{ position: [0, 0, 6], fov: 50 }}
+          style={{ width: "100%", height: "100%" }}
+        >
+          <ambientLight intensity={0.08} />
+          <pointLight position={[0, 0, 5]} intensity={1.2} color="#ff00ff" />
+          <pointLight position={[-4, -2, -5]} intensity={1.0} color="#00ffff" />
+          <OrbitalArcs />
+        </Canvas>
+      </div>
+
+      {/* ===== Capa 1: background dinámico de Framer Motion (encima del canvas) ===== */}
       <motion.div
         key={active}
         animate={{ opacity: 1 }}
@@ -227,13 +207,18 @@ export default function ResourcesCinematic() {
         }}
       />
 
+      {/* Navbar */}
       <div className="absolute inset-x-0 top-0 z-20 pointer-events-auto">
         <Navbar />
       </div>
 
       <Timeline />
 
-      <div ref={viewportRef} className="relative z-10 h-screen overflow-y-auto snap-y snap-mandatory">
+      {/* ===== Contenedor con scroll interno (Framer Motion usa este container) ===== */}
+      <div
+        ref={viewportRef}
+        className="relative z-10 h-screen overflow-y-auto snap-y snap-mandatory will-change-transform"
+      >
         {/* Overview */}
         <section
           ref={(el) => (sectionRefs.current[0] = el)}
