@@ -33,5 +33,5 @@ export const FEATURED = {
     "Full-stack e-commerce platform built with Next.js, NestJS, MongoDB, and Mongoose—serving 1,000+ monthly users with secure checkout and real-time inventory management.",
   tags: ["Next.js", "NestJS", "MongoDB", "Mongoose"],
   caseHref: "/projects#powerleds",
-  image: "/images/powerleds.jpg"
+  image: "/images/powerleds.png"
 };
