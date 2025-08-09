@@ -10,7 +10,6 @@ import SectionShell from "../components/ContactComponents/SectionShell";
 import ContactHero from "../components/ContactComponents/ContactHero";
 import DirectCard from "../components/ContactComponents/DirectCard";
 import ContactForm from "../components/ContactComponents/ContactForm";
-import FinalCTA from "../components/ContactComponents/FinalCTA";
 
 import { CONTACT_BG, CONTACT_EMAIL, CONTACT_SOCIALS } from "../data/contactInformation";
 
@@ -96,8 +95,6 @@ export default function Contact() {
             </div>
           </div>
         </SectionShell>
-
-        <FinalCTA email={CONTACT_EMAIL} />
 
         <div className="h-8" />
       </main>
