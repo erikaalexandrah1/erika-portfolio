@@ -33,7 +33,7 @@ function Navbar() {
 
   return (
     <>
-    <header className="fixed top-0 left-0 w-full z-50 px-6 py-1 flex justify-between items-center text-white bg-black/20 shadow-[0_4px_10px_rgba(0,0,0,0.4)] backdrop-blur-sm">
+    <header className="fixed top-0 left-0 w-full z-50 px-6 py-1 flex justify-between items-center text-white shadow-[0_4px_10px_rgba(0,0,0,0.4)] backdrop-blur-sm">
         {/* Logo + nombre */}
         <div className="flex items-center gap-3 cursor-pointer" onClick={handleLogoClick}>
           <img src="/logo.svg" alt="Logo" className="h-6" />
