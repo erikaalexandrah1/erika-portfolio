@@ -6,55 +6,62 @@ import Navbar from "../components/Navbar";
 const TIMELINE = [
   {
     year: "2025",
-    title: "Lead Engineer • Data & Platforms",
+    title: "Software Developer • Data & Backend Focus",
     blurb:
-      "Diseño de arquitecturas limpias, data pipelines en tiempo real y guías de buenas prácticas para equipos cross-funcionales.",
+      "Designing APIs with NestJS, relational and NoSQL modeling, and pragmatic testing practices. Leading small sprints, mentoring peers, and focusing on maintainable systems.",
     tag: "Role",
   },
   {
     year: "2024",
-    title: "Profesor invitado • Software Engineering",
+    title: "Teaching Assistant • Databases II & Software Engineering (UNIMET)",
     blurb:
-      "Clases sobre bases de datos, ETL/BI, backend con NestJS y micro-interacciones de frontend con React/Framer.",
+      "While studying Systems Engineering, I supported courses in NoSQL (MongoDB, Neo4j), ETL with Pentaho, backend with NestJS, and Agile (Scrum). Strengthened expertise in query design and backend clarity.",
+    tag: "Teaching",
+  },
+  {
+    year: "2024",
+    title: "Project Winner • MetroTour (Unity)",
+    blurb:
+      "Awarded Best Project in ‘Digital Content for the Metaverse’. Built an interactive Unity experience, highlighting product sense, cross-functional teamwork, and polished UX.",
+    tag: "Project",
+  },
+  {
+    year: "2023",
+    title: "Teaching Assistant • Databases I (UNIMET)",
+    blurb:
+      "As a Systems Engineering student, I guided peers in PostgreSQL and relational database design.",
     tag: "Teaching",
   },
   {
     year: "2023",
-    title: "Case Study • Real-time Analytics Edge",
+    title: "Diplomas • Software Development & Data Design",
     blurb:
-      "Streaming + modelo dimensional + UI con feedback sub-segundo. KPIs accionables y DX cuidado.",
-    tag: "Project",
-  },
-  {
-    year: "2022",
-    title: "Certificación • Neo4j & Graph Data",
-    blurb:
-      "Modelado de grafos, Cypher avanzado y despliegue administrado en AuraDB para recomendaciones.",
+      "Completed intensive studies in algorithms, data structures, databases, information systems, and computer architecture — building a strong CS foundation.",
     tag: "Certification",
   },
   {
-    year: "2021",
-    title: "Backend & APIs • Clean Architecture",
+    year: "2022 — Present",
+    title: "Systems Engineering Student • UNIMET",
     blurb:
-      "REST/GraphQL, auth sólida, testing y documentación con Swagger. Enfoque en claridad y mantenibilidad.",
-    tag: "Backend",
+      "Currently pursuing a degree in Systems Engineering, focusing on backend clarity, data pipelines, and scalable systems. Balancing coursework with teaching assistantships and real-world projects.",
+    tag: "Education",
   },
   {
-    year: "2019",
-    title: "Data Analysis • ETL & BI",
+    year: "2020",
+    title: "Medical Doctor (Cum Laude) • UCV",
     blurb:
-      "Pipelines reproducibles, exploración con estadística básica y dashboards que comunican claro.",
-    tag: "Data",
+      "Graduated 6th out of 169 at UCV, with hands-on training in high-pressure hospital environments under resource-limited conditions. This experience honed precision, adaptability, and decision-making under uncertainty — qualities I now apply to building thoughtful, resilient software systems.",
+    tag: "Background",
   },
 ];
 
 const CERTS = [
-  { name: "Neo4j Certified", meta: "Graph Data / Cypher" },
-  { name: "MongoDB Fundamentals", meta: "Modeling & Aggregations" },
-  { name: "PostgreSQL Advanced", meta: "Indexes & Query Tuning" },
-  { name: "NestJS Pro", meta: "Testing / Swagger / Auth" },
-  { name: "React & A11y", meta: "Patterns & Micro-interactions" },
-  { name: "ETL / BI", meta: "Dimensional Modeling" },
+  { name: "Rector’s List — UNIMET", meta: "Academic Excellence (2023)" },
+  { name: "PostgreSQL — Databases I (TA)", meta: "Relational modeling & SQL" },
+  { name: "MongoDB & Neo4j — Databases II (TA)", meta: "NoSQL & Graph data" },
+  { name: "ETL — Pentaho Data Integration", meta: "Pipelines & dimensional thinking" },
+  { name: "NestJS — Backend Engineering", meta: "Auth, testing, Swagger docs" },
+  { name: "Agile — Scrum Practices", meta: "Team delivery & iteration" },
 ];
 
 /* ====== Motion presets ====== */
@@ -110,9 +117,9 @@ export default function About() {
                 I build systems that feel clear.
               </h1>
               <p className="mt-4 max-w-2xl text-white/75">
-                Engineer focused on databases, data pipelines, backend clarity,
-                and interaction-first UIs. I also teach — turning complex topics
-                into practical takeaways for teams and students.
+                Systems Engineering student and Software Developer specializing in backend clarity and data pipelines. 
+                Teaching assistant in Databases and Software Engineering, recognized for academic excellence. 
+                With a background as a physician (Cum Laude), I bring precision, empathy, and rigor to building reliable, human-centered software systems.
               </p>
             </motion.div>
           </div>
@@ -138,33 +145,22 @@ export default function About() {
                   return (
                     <motion.div
                       key={item.year + item.title}
-                      className={`grid grid-cols-1 md:grid-cols-2 items-stretch gap-6`}
+                      className="grid grid-cols-1 md:grid-cols-3 items-stretch"
                       initial={{ opacity: 0, y: 20, x: isLeft ? -16 : 16 }}
                       whileInView={{ opacity: 1, y: 0, x: 0 }}
                       viewport={{ once: false, amount: 0.4 }}
                       transition={{ duration: 0.6, ease: EASE, delay: 0.02 * i }}
                     >
-                      {/* Col izq (si isLeft) */}
-                      <div className={`${isLeft ? "order-1" : "order-2"} md:order-1`}>
-                        {isLeft && (
-                          <div className="md:pr-10">
-                            <Card item={item} />
-                          </div>
-                        )}
+                      <div className="md:pr-2 max-w-[460px] lg:w-[460px] ml-auto">
+                        {isLeft && <div className="md:pr-6"><Card item={item} /></div>}
                       </div>
 
-                      {/* Nodo central (a nivel visual) */}
-                      <div className="hidden md:flex order-2 md:order-none justify-center">
+                      <div className="hidden md:flex md:col-span-1 justify-center">
                         <Node year={item.year} tag={item.tag} />
                       </div>
 
-                      {/* Col der (si !isLeft) */}
-                      <div className={`${isLeft ? "order-3" : "order-1"} md:order-3`}>
-                        {!isLeft && (
-                          <div className="md:pl-10">
-                            <Card item={item} />
-                          </div>
-                        )}
+                      <div className="md:col-span-1 max-w-[460px] lg:w-[460px]">
+                        {!isLeft && <div className="md:pl-6"><Card item={item} /></div>}
                       </div>
                     </motion.div>
                   );
@@ -172,7 +168,7 @@ export default function About() {
               </div>
             </div>
           </div>
-        </section>
+</section>
 
         {/* CERTIFICATIONS */}
         <section className="pb-16">
