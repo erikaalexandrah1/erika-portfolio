@@ -38,7 +38,7 @@ function Navbar() {
         <div className="flex items-center gap-3 cursor-pointer" onClick={handleLogoClick}>
           <img src="/logo.svg" alt="Logo" className="h-6" />
           <span className="text-md font-bold tracking-wide uppercase">
-            Erika Hernández Zurilla
+            Erika Hernández 
           </span>
         </div>
 
