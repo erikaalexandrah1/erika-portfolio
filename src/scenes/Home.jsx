@@ -1,10 +1,11 @@
-import { Canvas } from "@react-three/fiber";
+import { lazy, Suspense } from "react";
 import { motion } from "framer-motion";
 
 import Navbar from "../components/Navbar";
-import NoisePlane from "../components/BackgroundNoise";
+import useDeferredMount from "../hooks/useDeferredMount";
 
 import BackgroundFX from "../components/HomeComponents/BackgroundFX";
+const HomeCanvas = lazy(() => import("../components/HomeComponents/HomeCanvas"));
 import Pill from "../components/HomeComponents/Pill";
 import CTA from "../components/HomeComponents/CTA";
 import Stat from "../components/HomeComponents/Stat";
@@ -13,23 +14,22 @@ import { MotionInView, fadeSlide } from "../components/HomeComponents/Motion";
 import { SKILLS, STATS, CTAS_TOP, FEATURED } from "../data/homeInformation";
 
 export default function Home() {
+  const show3D = useDeferredMount();
+
   return (
     <div className="relative w-full h-screen overflow-hidden">
       <BackgroundFX />
 
       <Navbar />
 
-      {/* Canvas */}
-      <Canvas
-        gl={{ alpha: true }}
-        style={{ width: "100vw", height: "100vh" }}
-        camera={{ position: [0, 0, 6], fov: 50 }}
-      >
-        <ambientLight intensity={0.1} />
-        <pointLight position={[0, 0, 5]} intensity={1.5} color="#ff00ff" />
-        <pointLight position={[-4, -2, -5]} intensity={1.2} color="#00ffff" />
-        <NoisePlane />
-      </Canvas>
+      {/* Canvas 3D diferido: entra tras el primer pintado, no bloquea la carga */}
+      {show3D && (
+        <div className="absolute inset-0 pointer-events-none">
+          <Suspense fallback={null}>
+            <HomeCanvas />
+          </Suspense>
+        </div>
+      )}
 
       {/* Overlay */}
       <main className="pointer-events-auto absolute inset-0 z-10 overflow-y-auto">

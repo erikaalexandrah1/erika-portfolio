@@ -1,8 +1,13 @@
-import { useState, useEffect, useRef } from "react";
-import FullscreenMenu from "./FullScreenMenu";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
+
+// Carga diferida: el menú arrastra Three.js (Canvas + OrbitalArcs).
+// Solo se descarga cuando el usuario abre el menú, no en la carga inicial.
+const FullscreenMenu = lazy(() => import("./FullScreenMenu"));
+const prefetchMenu = () => import("./FullScreenMenu");
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [menuMounted, setMenuMounted] = useState(false);
   const clickSound = useRef(null);
 
   // Cargar el sonido en el montaje
@@ -28,7 +33,8 @@ function Navbar() {
 
   const handleMenuToggle = () => {
     playClickSound();
-    setMenuOpen(!menuOpen);
+    setMenuMounted(true);
+    setMenuOpen((v) => !v);
   };
 
   return (
@@ -45,6 +51,7 @@ function Navbar() {
         {/* Botón menú (hamburger / close) */}
         <button
           onClick={handleMenuToggle}
+          onMouseEnter={prefetchMenu}
           className="p-3 z-50 relative text-white"
           aria-label="Toggle menu"
         >
@@ -73,7 +80,11 @@ function Navbar() {
         </button>
       </header>
 
-      <FullscreenMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
+      {menuMounted && (
+        <Suspense fallback={null}>
+          <FullscreenMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
+        </Suspense>
+      )}
     </>
   );
 }

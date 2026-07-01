@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { Canvas } from "@react-three/fiber";
+import React, { useState, lazy, Suspense } from "react";
 
 import Navbar from "../components/Navbar";
-import OrbitalArcs from "../components/OrbitalArcs";
+import useDeferredMount from "../hooks/useDeferredMount";
 
 import SoftBackground from "../components/ContactComponents/SoftBackground";
+const ContactCanvas = lazy(() => import("../components/ContactComponents/ContactCanvas"));
 import SectionShell from "../components/ContactComponents/SectionShell";
 
 import ContactHero from "../components/ContactComponents/ContactHero";
@@ -22,6 +22,7 @@ export default function Contact() {
     message: "",
   });
   const [status, setStatus] = useState("idle"); // idle | sending | sent | error
+  const show3D = useDeferredMount();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -56,18 +57,13 @@ export default function Contact() {
       {/* Capa 1: fondo suave estático */}
       <SoftBackground {...CONTACT_BG} />
 
-      {/* Capa 2: Canvas con ruido animado (no bloquea inputs) */}
+      {/* Capa 2: Canvas 3D diferido (no bloquea inputs ni la carga inicial) */}
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <Canvas
-          gl={{ alpha: true }}
-          camera={{ position: [0, 0, 6], fov: 50 }}
-          style={{ width: "100%", height: "100%" }}
-        >
-          <ambientLight intensity={0.08} />
-          <pointLight position={[0, 0, 5]} intensity={1.2} color="#ff00ff" />
-          <pointLight position={[-4, -2, -5]} intensity={1.0} color="#00ffff" />
-          <OrbitalArcs />
-        </Canvas>
+        {show3D && (
+          <Suspense fallback={null}>
+            <ContactCanvas />
+          </Suspense>
+        )}
       </div>
 
       {/* Contenido */}
