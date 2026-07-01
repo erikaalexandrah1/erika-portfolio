@@ -1,21 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import { menuItems } from "../data/menuItems";
-import { useNavigate } from "react-router-dom";
-import SceneTransition from "./SceneTransition";
+import { useSceneTransition } from "../App";
 import SoftBackground from "./ContactComponents/SoftBackground";
 import { Canvas } from "@react-three/fiber";
 import OrbitalArcs from "./OrbitalArcs";
 
-const FADE_MS = 500; 
+const FADE_MS = 500;
 
 function FullscreenMenu({ open, onClose }) {
-  const [visible, setVisible] = useState(open); 
+  const [visible, setVisible] = useState(open);
   const [activeIndex, setActiveIndex] = useState(0);
   const [indicatorTop, setIndicatorTop] = useState(0);
-  const [transitioning, setTransitioning] = useState(false);
   const itemRefs = useRef([]);
   const hoverSound = useRef(null);
-  const navigate = useNavigate();
+  const { navigateWithTransition } = useSceneTransition();
 
   // Montar/desmontar con animación
   useEffect(() => {
@@ -61,12 +59,10 @@ function FullscreenMenu({ open, onClose }) {
   }, []);
 
   const handleNavigation = (anchor) => {
-    setTransitioning(true);
-    setTimeout(() => {
-      setTransitioning(false);
-      onClose();
-      navigate(anchor);
-    }, 1600);
+    // El overlay vive por encima del router (ver App/TransitionLayer), así que
+    // sobrevive al cambio de ruta y cubre la carga de la página destino.
+    onClose();
+    navigateWithTransition(anchor);
   };
 
   if (!visible) return null; // desmontado = no bloquea scroll
@@ -165,18 +161,6 @@ function FullscreenMenu({ open, onClose }) {
           Press <span className="px-1 py-0.5 rounded bg-white/10 border border-white/10">Esc</span> to close
         </div>
       </div>
-
-
-        <SceneTransition
-            active={transitioning}
-            onFinish={() => {}}
-            a="#0b0b0b"
-            b="#07070a"
-            r1="rgba(58,96,255,0.15)"
-            r2="rgba(255,112,164,0.10)"
-            r3="rgba(0,220,180,0.08)"
-            starColor="#eef6ff"
-        />
     </>
   );
 }
