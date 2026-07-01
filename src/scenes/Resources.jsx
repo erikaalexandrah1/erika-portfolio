@@ -1,35 +1,9 @@
-import { useRef, useCallback } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { useState, useMemo, useRef } from "react";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import Navbar from "../components/Navbar";
 import Seo from "../components/Seo";
 import "../resources.css";
-import { SECTIONS } from "../data/resourcesSections";
-
-/* Easing premium (easeOutExpo-ish) para un movimiento suave y natural */
-const EASE = [0.22, 1, 0.36, 1];
-
-/* Contenedor: orquesta la entrada escalonada de sus hijos */
-const containerV = {
-  hidden: {},
-  show: {
-    transition: { staggerChildren: 0.08, delayChildren: 0.05 },
-  },
-};
-
-/* Item con movimiento */
-const itemV = {
-  hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: EASE } },
-};
-
-/* Item sin movimiento (accesibilidad: prefers-reduced-motion) */
-const itemReducedV = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { duration: 0.3 } },
-};
-
-/* Config de viewport reutilizable: anima UNA sola vez, sin re-disparos en scroll */
-const VIEWPORT = { once: true, amount: 0.25 };
+import { PILLARS, TOPICS } from "../data/resourcesTopics";
 
 const ytId = (url) => {
   try {
@@ -37,210 +11,199 @@ const ytId = (url) => {
     if (u.hostname.includes("youtu.be")) return u.pathname.slice(1);
     if (u.hostname.includes("youtube.com")) return u.searchParams.get("v");
   } catch {
-    /* url inválida */
+    /* url vacía o inválida */
   }
   return null;
 };
 
-/* ---- Subcomponentes a nivel de módulo (no se recrean por render) ---- */
+const pillarOf = (id) => PILLARS.find((p) => p.id === id);
 
-function PillarCard({ title, subtitle, onClick, variants }) {
-  return (
-    <motion.button
-      variants={variants}
-      whileHover={{ y: -4 }}
-      whileTap={{ scale: 0.985 }}
-      transition={{ duration: 0.25, ease: EASE }}
-      onClick={onClick}
-      className="pillar-card"
-      aria-label={`${title}: ${subtitle}`}
-    >
-      <div className="pillar-card__inner">
-        <h3>{title}</h3>
-        <p>{subtitle}</p>
-      </div>
-      <div className="pillar-card__arrow" aria-hidden>
-        →
-      </div>
-    </motion.button>
-  );
-}
-
-function VideoMiniCard({ title, url, length, variants }) {
-  const id = ytId(url);
+/* ---------- Card expandible de un tema ---------- */
+function TopicCard({ topic }) {
+  const [open, setOpen] = useState(false);
+  const pillar = pillarOf(topic.pillar);
+  const id = ytId(topic.video?.url);
   const thumb = id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : undefined;
-  return (
-    <motion.a
-      variants={variants}
-      whileHover={{ y: -4 }}
-      transition={{ duration: 0.25, ease: EASE }}
-      href={url}
-      target="_blank"
-      rel="noreferrer"
-      className="video"
-      aria-label={`${title} (${length})`}
-    >
-      <div className="video__thumb">
-        {thumb ? (
-          <img src={thumb} alt={title} loading="lazy" />
-        ) : (
-          <div className="video__thumb--placeholder" />
-        )}
-        <span className="video__badge">{length}</span>
-      </div>
-      <div className="video__title" title={title}>
-        {title}
-      </div>
-    </motion.a>
-  );
-}
 
-function ScrollHint({ reduced, label = "Keep scrolling" }) {
   return (
-    <motion.div
-      className="scroll-hint"
-      initial={{ opacity: 0 }}
-      animate={reduced ? { opacity: 0.85 } : { opacity: 0.85, y: [0, 8, 0] }}
-      transition={
-        reduced
-          ? { duration: 0.4 }
-          : { duration: 1.8, repeat: Infinity, ease: "easeInOut" }
-      }
-      aria-hidden
+    <div
+      className={`rcard ${open ? "is-open" : ""}`}
+      style={{ "--accent": pillar?.color }}
     >
-      {label} ↓
-    </motion.div>
+      <button
+        className="rcard__head"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+      >
+        <div className="rcard__thumb">
+          {thumb ? (
+            <img src={thumb} alt="" loading="lazy" />
+          ) : (
+            <div className="rcard__thumb--empty" aria-hidden>
+              ▶
+            </div>
+          )}
+          {topic.video?.length && (
+            <span className="rcard__length">{topic.video.length}</span>
+          )}
+        </div>
+        <div className="rcard__info">
+          <span className="rcard__pillar" style={{ color: pillar?.color }}>
+            <span className="rcard__dot" />
+            {pillar?.label}
+          </span>
+          <h3 className="rcard__title">{topic.title}</h3>
+          <span className="rcard__meta">
+            🎥 1 video · 📄 {topic.pdfs.length} guía
+            {topic.pdfs.length > 1 ? "s" : ""}
+          </span>
+        </div>
+        <span className={`rcard__chevron ${open ? "is-open" : ""}`} aria-hidden>
+          ⌄
+        </span>
+      </button>
+
+      {/* Expansión con grid-template-rows (0fr→1fr): anima altura con CSS puro.
+          Filas tipo "cajetilla": el video abre YouTube, las guías descargan. */}
+      <div className="rcard__body">
+        <div className="rcard__body-inner">
+          <div className="rcard__body-pad">
+            {topic.video?.url ? (
+              <a
+                href={topic.video.url}
+                target="_blank"
+                rel="noreferrer"
+                className="rcard__link rcard__link--video"
+              >
+                <span className="rcard__link-icon" aria-hidden>
+                  ▶
+                </span>
+                <span className="rcard__link-text">Ver en YouTube</span>
+                <span className="rcard__link-cta" aria-hidden>
+                  ↗
+                </span>
+              </a>
+            ) : (
+              <div className="rcard__link rcard__link--empty">
+                <span className="rcard__link-icon" aria-hidden>
+                  ▶
+                </span>
+                <span className="rcard__link-text">Video pendiente</span>
+              </div>
+            )}
+
+            {topic.pdfs.map((pdf) => (
+              <a
+                key={pdf.url}
+                href={pdf.url}
+                target="_blank"
+                rel="noreferrer"
+                className="rcard__link rcard__link--pdf"
+              >
+                <span className="rcard__link-icon" aria-hidden>
+                  📄
+                </span>
+                <span className="rcard__link-text">{pdf.title}</span>
+                <span className="rcard__link-cta" aria-hidden>
+                  ↓
+                </span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
 export default function Resources() {
   const reduced = useReducedMotion();
-  const item = reduced ? itemReducedV : itemV;
+  const [filter, setFilter] = useState("all");
+  const scrollRef = useRef(null);
 
-  const sectionRefs = useRef(
-    Array.from({ length: SECTIONS.length + 1 }, () => null)
+  // Parallax del hero ligado al scroll del contenedor (toque Framer).
+  const { scrollYProgress } = useScroll({ container: scrollRef });
+  const heroY = useTransform(scrollYProgress, [0, 0.15], [0, -60]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
+
+  const filtered = useMemo(
+    () => (filter === "all" ? TOPICS : TOPICS.filter((t) => t.pillar === filter)),
+    [filter]
   );
-  const scrollTo = useCallback(
-    (i) =>
-      sectionRefs.current[i]?.scrollIntoView({
-        behavior: reduced ? "auto" : "smooth",
-        block: "start",
-      }),
-    [reduced]
-  );
+
+  const countOf = (pid) => TOPICS.filter((t) => t.pillar === pid).length;
 
   return (
-    <div className="w-full h-screen bg-black">
+    <div className="resources">
       <Seo
         title="Resources"
-        description="Free PDFs and video tutorials on the 4 pillars of software engineering: Databases, Data Analysis, Backend and Frontend."
+        description="Library of video tutorials and PDF guides on the 4 pillars of software engineering: Databases, Data Analysis, Backend and Frontend."
         path="/resources"
       />
-      <div className="resources">
-        <div className="resources__navbar">
-          <Navbar />
-        </div>
-        <div className="resources__bg" aria-hidden />
+      <div className="resources__navbar">
+        <Navbar />
+      </div>
+      <div className="resources__bg" aria-hidden />
 
-        <div className="resources__viewport">
-          {/* Overview */}
-          <section
-            ref={(el) => (sectionRefs.current[0] = el)}
-            className="section section--intro snap-start"
+      <div className="lib-scroll" ref={scrollRef}>
+        <main className="lib">
+          {/* Hero */}
+          <motion.header
+            className="lib__hero"
+            style={reduced ? undefined : { y: heroY, opacity: heroOpacity }}
           >
-            <motion.div
-              className="intro"
-              variants={containerV}
-              initial="hidden"
-              animate="show"
-            >
-              <motion.p variants={item} className="intro__eyebrow">
-                2/4 – PDFs and tutorials I teach
-              </motion.p>
-              <motion.h1 variants={item} className="intro__title">
-                Resources
-              </motion.h1>
-              <motion.p variants={item} className="intro__subtitle">
-                Essential resources to master the 4 pillars of software
-                engineering: Databases, Data Analysis, Backend, and Frontend.
-              </motion.p>
+            <p className="lib__eyebrow">2/4 — Resource library</p>
+            <h1 className="lib__title">Resources</h1>
+            <p className="lib__subtitle">
+              Video tutorials and PDF guides across the 4 pillars of software
+              engineering. Filter by topic and dive in.
+            </p>
+          </motion.header>
 
-              <motion.div className="intro__grid" variants={containerV}>
-                {SECTIONS.map((s, i) => (
-                  <PillarCard
-                    key={s.key}
-                    variants={item}
-                    title={s.title}
-                    subtitle={s.subtitle}
-                    onClick={() => scrollTo(i + 1)}
-                  />
-                ))}
-              </motion.div>
+          {/* Filtros */}
+          <div className="lib__filters" role="tablist" aria-label="Filter by pillar">
+            <FilterChip
+              active={filter === "all"}
+              onClick={() => setFilter("all")}
+              label="All"
+              count={TOPICS.length}
+            />
+            {PILLARS.map((p) => (
+              <FilterChip
+                key={p.id}
+                active={filter === p.id}
+                onClick={() => setFilter(p.id)}
+                label={p.label}
+                count={countOf(p.id)}
+                color={p.color}
+              />
+            ))}
+          </div>
 
-              <ScrollHint reduced={reduced} />
-            </motion.div>
-          </section>
-
-          {/* Sections */}
-          {SECTIONS.map((s, i) => (
-            <section
-              key={s.key}
-              ref={(el) => (sectionRefs.current[i + 1] = el)}
-              className="section snap-start"
-            >
-              <motion.div
-                className="panel"
-                variants={containerV}
-                initial="hidden"
-                whileInView="show"
-                viewport={VIEWPORT}
-              >
-                <motion.h2 variants={item} className="panel__title">
-                  {s.title}
-                </motion.h2>
-                <motion.h3 variants={item} className="panel__subtitle">
-                  {s.subtitle}
-                </motion.h3>
-                <motion.p variants={item} className="panel__description">
-                  {s.description}
-                </motion.p>
-
-                <motion.div className="panel__videos" variants={containerV}>
-                  {s.videos.map((v) => (
-                    <VideoMiniCard
-                      key={v.url}
-                      variants={item}
-                      title={v.title}
-                      url={v.url}
-                      length={v.length}
-                    />
-                  ))}
-                </motion.div>
-
-                <div className="panel__nav">
-                  {i > 0 ? (
-                    <button className="panel__btn" onClick={() => scrollTo(i)}>
-                      ← Back
-                    </button>
-                  ) : (
-                    <span />
-                  )}
-                  {i < SECTIONS.length - 1 && (
-                    <button
-                      className="panel__btn"
-                      onClick={() => scrollTo(i + 2)}
-                    >
-                      Next →
-                    </button>
-                  )}
-                </div>
-              </motion.div>
-            </section>
-          ))}
-
-          <div className="spacer-10vh" />
-        </div>
+          {/* Grid */}
+          <div className="lib__grid">
+            {filtered.map((topic) => (
+              <TopicCard key={topic.id} topic={topic} />
+            ))}
+          </div>
+        </main>
       </div>
     </div>
+  );
+}
+
+function FilterChip({ active, onClick, label, count, color }) {
+  return (
+    <button
+      role="tab"
+      aria-selected={active}
+      onClick={onClick}
+      className={`chip ${active ? "is-active" : ""}`}
+      style={active && color ? { "--chip": color } : undefined}
+    >
+      {color && <span className="chip__dot" style={{ background: color }} />}
+      {label}
+      <span className="chip__count">{count}</span>
+    </button>
   );
 }
