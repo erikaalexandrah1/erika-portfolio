@@ -44,7 +44,7 @@ export default function Home() {
 
             <motion.h1
               {...fadeSlide(0, 18, 0.7)}
-              className="mt-4 text-5xl md:text-7xl font-extrabold tracking-tight text-white"
+              className="mt-4 text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight text-white"
             >
               Building clear systems. <br className="hidden md:block" />
               Teaching what matters.

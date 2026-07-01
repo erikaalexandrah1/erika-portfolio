@@ -54,7 +54,7 @@ export default function Projects() {
               </span>
               <span>Selected work</span>
             </div>
-            <h1 className="mt-3 text-5xl md:text-7xl font-extrabold tracking-tight">Projects</h1>
+            <h1 className="mt-3 text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight">Projects</h1>
           </motion.div>
 
           <motion.p className="mt-4 max-w-2xl text-white/70" style={{ y: y2 }} {...fadeUp(0.05)}>

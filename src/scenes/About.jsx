@@ -113,7 +113,7 @@ export default function About() {
               <div className="text-xs text-white/60 uppercase tracking-wider">
                 About me
               </div>
-              <h1 className="mt-2 text-5xl md:text-7xl font-extrabold tracking-tight">
+              <h1 className="mt-2 text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight">
                 I build systems that feel clear.
               </h1>
               <p className="mt-4 max-w-2xl text-white/75">
@@ -135,9 +135,9 @@ export default function About() {
               Journey
             </motion.h2>
 
-            {/* Línea central */}
+            {/* Línea central (solo desktop; en móvil el timeline es de una columna) */}
             <div className="relative mt-6">
-              <div className="absolute left-1/2 top-0 -translate-x-1/2 h-full w-px bg-white/10" />
+              <div className="hidden md:block absolute left-1/2 top-0 -translate-x-1/2 h-full w-px bg-white/10" />
 
               <div className="flex flex-col gap-10">
                 {TIMELINE.map((item, i) => {
