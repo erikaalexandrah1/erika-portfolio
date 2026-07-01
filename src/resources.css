@@ -60,8 +60,12 @@
   z-index: 10;
   height: 100vh;
   overflow-y: auto;
-  scroll-snap-type: y mandatory;
+  /* proximity (no mandatory): el snap ayuda sin pelear con el usuario */
+  scroll-snap-type: y proximity;
   scroll-behavior: smooth;
+  scroll-padding-top: 72px;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
 }
 
 /* Secciones */
@@ -117,6 +121,26 @@
   cursor: pointer;
   box-shadow: var(--shadow-soft);
   outline: none;
+  /* transform lo controla framer (whileHover); aquí solo color/sombra */
+  transition: border-color .25s ease, box-shadow .25s ease, background .25s ease;
+}
+.pillar-card:hover{
+  border-color: rgba(255,255,255,.18);
+  background: linear-gradient(180deg, #101010, #131313);
+  box-shadow: 0 12px 34px rgba(0,0,0,.5);
+}
+.pillar-card:hover .pillar-card__arrow{
+  color: var(--fg);
+  transform: translateX(3px);
+}
+.pillar-card__arrow{
+  transition: color .25s ease, transform .25s ease;
+}
+.pillar-card:focus-visible,
+.video:focus-visible,
+.panel__btn:focus-visible{
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0,0,0,.9), 0 0 0 4px rgba(120,150,255,.65);
 }
 .pillar-card__inner h3{
   font-size: clamp(18px, 2.2vw, 22px);
@@ -187,12 +211,13 @@
   text-decoration: none;
   color: var(--fg);
   padding: 10px;
-  transition: transform .15s ease, border-color .2s ease, background .2s ease;
+  /* transform lo controla framer (whileHover); aquí solo color/fondo */
+  transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
 }
 .video:hover{
-  transform: translateY(-2px);
   border-color: rgba(255,255,255,.16);
   background: #0c0c0c;
+  box-shadow: 0 10px 26px rgba(0,0,0,.4);
 }
 .video__thumb{
   position: relative;
@@ -250,3 +275,9 @@
 
 /* Espaciador final */
 .spacer-10vh{ height: 10vh; }
+
+/* Accesibilidad: respetar reducción de movimiento */
+@media (prefers-reduced-motion: reduce){
+  .resources__viewport{ scroll-behavior: auto; }
+  .video, .pillar-card, .pillar-card__arrow, .panel__btn{ transition: none; }
+}
