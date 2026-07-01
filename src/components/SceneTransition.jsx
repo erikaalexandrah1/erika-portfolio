@@ -1,18 +1,28 @@
 // src/components/SceneTransition.jsx
-import { useEffect, useRef, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { AnimatePresence, motion } from "framer-motion";
 
 /**
- * Starfield: campo de estrellas con desplazamiento en Z
+ * Starfield: campo de estrellas con desplazamiento en Z.
+ * Cada estrella se dibuja con un shader (núcleo brillante + halo redondo),
+ * con tamaño y parpadeo (twinkle) propios y un ligero tinte de la paleta.
  */
-function Starfield({ speed = 2.2, count = 3500, spread = 12, depth = 15, size = 0.015, opacity = 0.9, color = "#ffffff" }) {
-  const ref = useRef();
-
-  const particles = useMemo(() => {
+function Starfield({ speed = 2.2, count = 4200, spread = 12, depth = 15, color = "#eaf2ff" }) {
+  const { geometry, material, velocities } = useMemo(() => {
     const positions = new Float32Array(count * 3);
+    const sizes = new Float32Array(count);
+    const phases = new Float32Array(count);
+    const colors = new Float32Array(count * 3);
     const velocities = new Float32Array(count);
+
+    const palette = [
+      new THREE.Color("#ffffff"),
+      new THREE.Color("#bcd0ff"), // azul suave
+      new THREE.Color("#ffd9ec"), // rosa suave
+      new THREE.Color("#c9fff2"), // cyan suave
+    ];
 
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
@@ -20,51 +30,99 @@ function Starfield({ speed = 2.2, count = 3500, spread = 12, depth = 15, size = 
       positions[i3 + 1] = (Math.random() - 0.5) * spread;
       positions[i3 + 2] = Math.random() * -depth;
       velocities[i] = 0.02 + Math.random() * 0.02;
+      sizes[i] = 0.25 + Math.random() * 0.75; // tamaños variados y sutiles
+      phases[i] = Math.random() * Math.PI * 2; // fase de twinkle
+      // ~70% blancas, ~30% con tinte de la paleta
+      const c = Math.random() < 0.7 ? palette[0] : palette[1 + Math.floor(Math.random() * 3)];
+      colors[i3 + 0] = c.r;
+      colors[i3 + 1] = c.g;
+      colors[i3 + 2] = c.b;
     }
 
-    return { positions, velocities, count };
-  }, [count, spread, depth]);
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute("aSize", new THREE.BufferAttribute(sizes, 1));
+    geometry.setAttribute("aPhase", new THREE.BufferAttribute(phases, 1));
+    geometry.setAttribute("aColor", new THREE.BufferAttribute(colors, 3));
 
-  useFrame(() => {
-    const geo = ref.current.geometry;
-    const positions = geo.attributes.position.array;
-    const { velocities, count } = particles;
+    const material = new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      uniforms: {
+        uTime: { value: 0 },
+        uScale: { value: 130 },
+        uPixelRatio: { value: 1 },
+        uOpacity: { value: 0.85 },
+        uBase: { value: new THREE.Color(color) },
+      },
+      vertexShader: `
+        attribute float aSize;
+        attribute float aPhase;
+        attribute vec3 aColor;
+        uniform float uTime;
+        uniform float uScale;
+        uniform float uPixelRatio;
+        varying float vTw;
+        varying vec3 vColor;
+        void main() {
+          vColor = aColor;
+          // parpadeo suave e individual
+          vTw = 0.55 + 0.45 * sin(uTime * 2.0 + aPhase);
+          vec4 mv = modelViewMatrix * vec4(position, 1.0);
+          gl_Position = projectionMatrix * mv;
+          float dist = max(-mv.z, 0.1);
+          gl_PointSize = clamp(aSize * uScale * uPixelRatio / dist, 1.0, 42.0);
+        }
+      `,
+      fragmentShader: `
+        precision highp float;
+        uniform float uOpacity;
+        uniform vec3 uBase;
+        varying float vTw;
+        varying vec3 vColor;
+        void main() {
+          vec2 p = gl_PointCoord - 0.5;
+          float d = length(p);
+          if (d > 0.5) discard;          // recorte circular (no cuadrados)
+          float core = smoothstep(0.5, 0.0, d);
+          float glow = pow(core, 3.0);   // núcleo brillante + halo suave
+          float alpha = glow * uOpacity * vTw;
+          vec3 col = mix(uBase, vColor, 0.6) * (0.6 + 0.6 * vTw);
+          gl_FragColor = vec4(col, alpha);
+        }
+      `,
+    });
 
+    return { geometry, material, velocities };
+  }, [count, spread, depth, color]);
+
+  // Liberar recursos GPU al desmontar (la transición monta/desmonta)
+  useEffect(() => () => {
+    geometry.dispose();
+    material.dispose();
+  }, [geometry, material]);
+
+  useFrame((state, delta) => {
+    material.uniforms.uTime.value = state.clock.elapsedTime;
+    material.uniforms.uPixelRatio.value = state.gl.getPixelRatio();
+
+    const positions = geometry.attributes.position.array;
+    // normalizado a ~60fps para velocidad constante en cualquier pantalla
+    const step = speed * delta * 60;
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
-      positions[i3 + 2] += velocities[i] * speed;
-
+      positions[i3 + 2] += velocities[i] * step;
       if (positions[i3 + 2] > 1) {
         positions[i3 + 0] = (Math.random() - 0.5) * spread;
         positions[i3 + 1] = (Math.random() - 0.5) * spread;
         positions[i3 + 2] = -depth;
       }
     }
-
-    geo.attributes.position.needsUpdate = true;
+    geometry.attributes.position.needsUpdate = true;
   });
 
-  return (
-    <points ref={ref}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={particles.count}
-          array={particles.positions}
-          itemSize={3}
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        color={new THREE.Color(color)}
-        size={size}
-        sizeAttenuation
-        depthWrite={false}
-        transparent
-        opacity={opacity}
-        blending={THREE.AdditiveBlending}
-      />
-    </points>
-  );
+  return <points geometry={geometry} material={material} />;
 }
 
 
