@@ -1,6 +1,7 @@
 import React, { useMemo, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Navbar from "../components/Navbar";
+import Seo from "../components/Seo";
 import ProjectCard from "../components/ProjectsComponents/ProjectCard";
 import { CATEGORIES, PROJECTS } from "../data/projectsInformation";
 
@@ -30,6 +31,11 @@ export default function Projects() {
 
   return (
     <div className="relative min-h-screen text-white">
+      <Seo
+        title="Projects"
+        description="Case studies across databases, data pipelines, backend design and frontend interactions — focused on clarity, performance and human-centred UX."
+        path="/projects"
+      />
       {/* Background */}
       <div
         className="absolute inset-0 -z-10 pointer-events-none

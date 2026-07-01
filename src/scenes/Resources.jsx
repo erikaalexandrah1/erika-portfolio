@@ -1,6 +1,7 @@
 import { useRef, useCallback } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import Navbar from "../components/Navbar";
+import Seo from "../components/Seo";
 import "../resources.css";
 import { SECTIONS } from "../data/resourcesSections";
 
@@ -130,6 +131,11 @@ export default function Resources() {
 
   return (
     <div className="w-full h-screen bg-black">
+      <Seo
+        title="Resources"
+        description="Free PDFs and video tutorials on the 4 pillars of software engineering: Databases, Data Analysis, Backend and Frontend."
+        path="/resources"
+      />
       <div className="resources">
         <div className="resources__navbar">
           <Navbar />

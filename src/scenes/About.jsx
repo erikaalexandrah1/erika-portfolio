@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Navbar from "../components/Navbar";
+import Seo from "../components/Seo";
 
 /* ====== Data (ajusta a tu historia real) ====== */
 const TIMELINE = [
@@ -86,6 +87,11 @@ const TAG_STYLES = {
 export default function About() {
   return (
     <div className="relative min-h-screen text-white">
+      <Seo
+        title="About"
+        description="Systems Engineering student and Software Developer, teaching assistant, and physician (Cum Laude) — bringing precision, empathy and rigor to reliable, human-centered software."
+        path="/about"
+      />
       {/* ===== Fondo con tu misma estética ===== */}
       <div
         className="

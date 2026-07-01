@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { motion } from "framer-motion";
 
 import Navbar from "../components/Navbar";
+import Seo from "../components/Seo";
 import useDeferredMount from "../hooks/useDeferredMount";
 
 import BackgroundFX from "../components/HomeComponents/BackgroundFX";
@@ -18,6 +19,7 @@ export default function Home() {
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
+      <Seo path="/" />
       <BackgroundFX />
 
       <Navbar />

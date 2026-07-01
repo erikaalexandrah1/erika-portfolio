@@ -1,6 +1,7 @@
 import React, { useState, lazy, Suspense } from "react";
 
 import Navbar from "../components/Navbar";
+import Seo from "../components/Seo";
 import useDeferredMount from "../hooks/useDeferredMount";
 
 import SoftBackground from "../components/ContactComponents/SoftBackground";
@@ -54,6 +55,11 @@ export default function Contact() {
 
   return (
     <div className="relative min-h-screen text-white overflow-hidden">
+      <Seo
+        title="Contact"
+        description="Get in touch about classes, collaborations, or ideas. Short and clear works best — I read everything."
+        path="/contact"
+      />
       {/* Capa 1: fondo suave estático */}
       <SoftBackground {...CONTACT_BG} />
 
