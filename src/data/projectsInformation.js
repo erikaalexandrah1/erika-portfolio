@@ -8,7 +8,7 @@ export const PROJECTS = [
     tag: "Frontend",
     meta: "React • Firebase • Tours Booking",
     href: "https://visuart-17959.web.app/",
-    image: "/images/visuart-bg.png",
+    image: "/images/visuart-bg.webp",
   },
   {
     id: "p2",
@@ -17,7 +17,7 @@ export const PROJECTS = [
     tag: "Frontend",
     meta: "React • Next.js 13 • Tailwind CSS • Firebase • JWT",
     href: "https://unimetprocesslab.vercel.app",
-    image: "/images/processlab-bg.png",
+    image: "/images/processlab-bg.webp",
   },
   {
     id: "p3",
@@ -26,7 +26,7 @@ export const PROJECTS = [
     tag: "Databases",
     meta: "React • Next.js 14 • Neo4J",
     href: "https://metrofy.vercel.app",
-    image: "/images/metrofy-bg.png",
+    image: "/images/metrofy-bg.webp",
   },
   {
     id: "p4",
@@ -35,7 +35,7 @@ export const PROJECTS = [
     tag: "Backend",
     meta: "React • Next.js 14 • NestJS • Neo4J AuraDB • TMDB API",
     href: "https://unimet-buzzflix.vercel.app/",
-    image: "/images/buzzflix-bg.png",
+    image: "/images/buzzflix-bg.webp",
   },
   {
     id: "p5",
@@ -44,6 +44,6 @@ export const PROJECTS = [
     tag: "Fullstack",
     meta: "Next.js • NestJS • MongoDB • DaisyUI",
     href: "https://powerleds.net",
-    image: "/images/powerleds-bg.png",
+    image: "/images/powerleds-bg.webp",
   },
 ];
