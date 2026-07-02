@@ -1,6 +1,7 @@
 import { lazy, Suspense, createContext, useContext, useState, useCallback } from "react";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import SceneTransition from "./components/SceneTransition";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 // Carga perezosa: cada escena se descarga en su propio chunk, solo al visitarla.
 const Home = lazy(() => import("./scenes/Home"));
@@ -8,6 +9,7 @@ const Projects = lazy(() => import("./scenes/Projects"));
 const About = lazy(() => import("./scenes/About"));
 const Resources = lazy(() => import("./scenes/Resources"));
 const Contact = lazy(() => import("./scenes/Contact"));
+const NotFound = lazy(() => import("./scenes/NotFound"));
 
 // Contexto para disparar la transición desde cualquier parte del árbol.
 const TransitionContext = createContext(null);
@@ -70,17 +72,20 @@ function TransitionLayer({ children }) {
 function App() {
   return (
     <BrowserRouter>
-      <TransitionLayer>
-        <Suspense fallback={<RouteFallback />}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/projects" element={<Projects />} />
-            <Route path="/resources" element={<Resources />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-          </Routes>
-        </Suspense>
-      </TransitionLayer>
+      <ErrorBoundary>
+        <TransitionLayer>
+          <Suspense fallback={<RouteFallback />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/projects" element={<Projects />} />
+              <Route path="/resources" element={<Resources />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </TransitionLayer>
+      </ErrorBoundary>
     </BrowserRouter>
   );
 }

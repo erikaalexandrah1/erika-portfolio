@@ -6,11 +6,13 @@ export default function CTA({
   children,
   primary = false,
   delay = 0,
+  download,
 }) {
   return (
     <motion.a
       {...fadeSlide(delay, 10, 0.5)}
       href={href}
+      download={download}
       className={`rounded-full px-5 py-2.5 text-sm uppercase tracking-wide border transition-colors focus:outline-none focus:ring-2 focus:ring-white/30 ${
         primary
           ? "bg-white/15 hover:bg-white/20 border-white/20 text-white"

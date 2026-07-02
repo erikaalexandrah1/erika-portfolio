@@ -69,6 +69,7 @@ export default function Home() {
                   href={c.href}
                   primary={c.primary}
                   delay={c.delay}
+                  download={c.download}
                 >
                   {c.label}
                 </CTA>

@@ -23,7 +23,7 @@ export const STATS = [
 export const CTAS_TOP = [
   { label: "View Projects →", href: "/projects", primary: true, delay: 0.05 },
   { label: "Resources", href: "/resources", primary: false, delay: 0.08 },
-  { label: "Download CV", href: "/cv.pdf", primary: false, delay: 0.11 },
+  { label: "Download CV", href: "/cv.pdf", download: "Erika-Hernandez-CV.pdf", primary: false, delay: 0.11 },
   { label: "Contact", href: "/contact", primary: false, delay: 0.14 },
 ];
 

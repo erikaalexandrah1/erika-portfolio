@@ -25,13 +25,15 @@ function ProjectCard({ item, onClick }) {
   const pop = (delay = 0) => ({
     initial: { opacity: 0, scale: 0.96, rotate: -0.6 },
     whileInView: { opacity: 1, scale: 1, rotate: 0 },
-    viewport: { amount: 0.6, once: false },
+    viewport: { amount: 0.6, once: true },
     transition: { duration: 0.5, ease: EASE, delay },
   });
 
   return (
     <motion.a
       href={item.href}
+      target="_blank"
+      rel="noopener noreferrer"
       onClick={(e) => {
         if (onClick) onClick(item);
       }}
