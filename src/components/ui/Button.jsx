@@ -10,16 +10,17 @@ import { useSceneTransition } from "../../App";
  *
  * Micro-interacciones: crece en hover y se hunde en tap (spring).
  */
-const base =
+// Estilos compartidos del design system (reutilizados por MagneticButton).
+export const btnBase =
   "inline-flex items-center justify-center gap-2 rounded-full font-medium tracking-wide " +
   "transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 select-none";
 
-const sizes = {
+export const btnSizes = {
   md: "px-5 py-2.5 text-sm",
   lg: "px-6 py-3 text-[15px]",
 };
 
-const variants = {
+export const btnVariants = {
   primary:
     "text-white bg-[linear-gradient(100deg,#5b6cff,#a25bff,#ff5fa8)] bg-[length:200%_100%] " +
     "shadow-[0_10px_34px_-10px_rgba(120,90,255,0.75)] hover:bg-[position:100%_0] hover:shadow-[0_14px_44px_-8px_rgba(255,95,168,0.65)]",
@@ -27,6 +28,10 @@ const variants = {
     "text-white border border-white/15 bg-white/[0.06] backdrop-blur hover:bg-white/[0.12] hover:border-white/30",
   ghost: "text-white/70 hover:text-white hover:bg-white/[0.06]",
 };
+
+const base = btnBase;
+const sizes = btnSizes;
+const variants = btnVariants;
 
 const spring = { type: "spring", stiffness: 420, damping: 24 };
 

@@ -3,6 +3,8 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import Navbar from "../components/Navbar";
 import Seo from "../components/Seo";
 import ProjectCard from "../components/ProjectsComponents/ProjectCard";
+import Button from "../components/ui/Button";
+import Eyebrow from "../components/ui/Eyebrow";
 import { CATEGORIES, PROJECTS } from "../data/projectsInformation";
 
 const EASE = [0.2, 0.65, 0.3, 0.9];
@@ -54,12 +56,7 @@ export default function Projects() {
       <section ref={heroRef} className="relative pt-28 pb-16">
         <div className="mx-auto w-[min(1100px,92vw)]">
           <motion.div style={{ y: y1 }} {...fadeUp(0)}>
-            <div className="text-xs text-white/60 uppercase tracking-wider flex items-center gap-2">
-              <span className="inline-flex items-center justify-center px-2 py-1 rounded-full border border-white/10 bg-white/5">
-                Case studies
-              </span>
-              <span>Selected work</span>
-            </div>
+            <Eyebrow>Case studies · Selected work</Eyebrow>
             <h1 className="mt-3 text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight">Projects</h1>
           </motion.div>
 
@@ -104,13 +101,11 @@ export default function Projects() {
           <motion.p className="mt-2 text-white/70" {...fadeUp(0.05)}>
             I can share repos, PDFs, or a quick walkthrough upon request.
           </motion.p>
-          <motion.a
-            href="/contact"
-            className="inline-flex mt-6 px-5 py-2.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition-colors uppercase tracking-wide text-sm"
-            whileHover={{ scale: 1.05 }}
-          >
-            Get in touch →
-          </motion.a>
+          <div className="mt-6 flex justify-center">
+            <Button to="/contact" variant="primary" size="lg">
+              Get in touch →
+            </Button>
+          </div>
         </div>
       </section>
 

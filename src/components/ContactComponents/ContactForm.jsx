@@ -88,7 +88,7 @@ export default function ContactForm({
       </div>
 
       <div className="mt-6 flex items-center gap-3">
-        <MagneticButton type="submit" disabled={status === "sending"}>
+        <MagneticButton type="submit" variant="primary" disabled={status === "sending"}>
           {status === "sending" ? "Sending…" : "Send message"}
         </MagneticButton>
         {status === "sent" && (

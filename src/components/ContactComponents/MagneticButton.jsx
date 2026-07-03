@@ -1,25 +1,42 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
+import { btnBase, btnSizes, btnVariants } from "../ui/Button";
 
-export default function MagneticButton({ children, className = "", ...props }) {
+/**
+ * Botón con efecto magnético (sigue al cursor) + sonido, reutilizando los
+ * estilos del design system (ui/Button) para verse consistente con el resto.
+ */
+export default function MagneticButton({
+  children,
+  variant = "secondary",
+  size = "md",
+  className = "",
+  ...props
+}) {
   const ref = useRef(null);
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
   const tx = useTransform(mx, [-1, 1], ["-6px", "6px"]);
   const ty = useTransform(my, [-1, 1], ["-6px", "6px"]);
 
-  // Reproducir sonido
+  // Un único objeto Audio reutilizado (antes se creaba uno por hover).
+  const hoverSound = useRef(null);
+  useEffect(() => {
+    hoverSound.current = new Audio("/sounds/hover.mp3");
+    hoverSound.current.load();
+  }, []);
+
   const playHoverSound = () => {
-    const audio = new Audio("/sounds/hover.mp3");
-    audio.currentTime = 0; 
-    audio.play().catch(() => {
-    });
+    const a = hoverSound.current;
+    if (!a) return;
+    a.currentTime = 0;
+    a.play().catch(() => {});
   };
 
   return (
     <motion.button
       ref={ref}
-      onMouseEnter={playHoverSound} 
+      onMouseEnter={playHoverSound}
       onMouseMove={(e) => {
         const r = ref.current?.getBoundingClientRect();
         if (!r) return;
@@ -33,9 +50,7 @@ export default function MagneticButton({ children, className = "", ...props }) {
         my.set(0);
       }}
       style={{ x: tx, y: ty }}
-      className={`inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5
-                  border border-white/10 bg-white/5 hover:bg-white/10 text-white/90
-                  uppercase tracking-wide text-sm transition-colors ${className}`}
+      className={`${btnBase} ${btnSizes[size]} ${btnVariants[variant]} ${className}`}
       whileHover={{ scale: 1.04 }}
       whileTap={{ scale: 0.98 }}
       {...props}
@@ -44,4 +59,3 @@ export default function MagneticButton({ children, className = "", ...props }) {
     </motion.button>
   );
 }
-
