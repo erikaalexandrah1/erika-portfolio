@@ -165,13 +165,16 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="w-full md:w-[42%] aspect-[16/10] rounded-2xl border border-white/10 bg-black/30 overflow-hidden">
-                  <img
-                    src={FEATURED.image}
-                    alt={`Preview of ${FEATURED.title}`}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                    loading="lazy"
-                  />
+                <div className="w-full md:w-[42%] aspect-[16/10] rounded-[2rem] border border-white/10 bg-black/20 overflow-hidden shadow-[0_0_0_1px_rgba(255,255,255,0.08)]">
+                  <div className="relative h-full w-full">
+                    <img
+                      src={FEATURED.image}
+                      alt={`Preview of ${FEATURED.title}`}
+                      className="absolute inset-0 w-full h-full object-cover object-[50%_18%] transition-transform duration-500 group-hover:scale-[1.03]"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-black/20" aria-hidden />
+                  </div>
                 </div>
               </div>
             </MotionInView>

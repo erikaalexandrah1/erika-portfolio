@@ -39,13 +39,13 @@ function TransitionLayer({ children }) {
       setActive(true);
       // Navegamos MIENTRAS el overlay cubre la pantalla: la página nueva
       // (y su chunk lazy) se monta por detrás sin que se vea la anterior.
-      setTimeout(() => navigate(to), 1100);
+      setTimeout(() => navigate(to), 850);
       // Iniciamos el fade-out una vez la nueva página ya está montada detrás,
       // así el overlay se desvanece revelando directamente la página destino.
-      setTimeout(() => setActive(false), 1600);
+      setTimeout(() => setActive(false), 1300);
       // Desmontamos tras el fade-out para liberar el Canvas (no basta con
       // AnimatePresence: el Canvas de R3F puede quedar retenido en el DOM).
-      setTimeout(() => setMounted(false), 2200);
+      setTimeout(() => setMounted(false), 1900);
     },
     [navigate]
   );
@@ -57,6 +57,7 @@ function TransitionLayer({ children }) {
         <SceneTransition
           active={active}
           onFinish={() => {}}
+          duration={1900}
           a="#0a0a0f"
           b="#050506"
           r1="rgba(91,108,255,0.16)"
