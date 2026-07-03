@@ -1,5 +1,20 @@
-export const CATEGORIES = ["All", "Databases", "Data", "Backend", "Frontend"];
+export const CATEGORIES = ["All", "Databases", "Data", "Backend", "Frontend", "Fullstack"];
 
+// Acento de marca por categoría (azul / morado / teal) — mismo criterio usado
+// en el resto del sitio (ver About.jsx TAG_META).
+export const TAG_COLORS = {
+  Databases: "91,108,255",
+  Data: "0,200,180",
+  Backend: "194,91,255",
+  Frontend: "91,108,255",
+  Fullstack: "194,91,255",
+};
+export const tagColor = (tag, a = 1) => `rgba(${TAG_COLORS[tag] || "255,255,255"},${a})`;
+
+// TODO: los `image` de p1-p4 son placeholders (arte decorativo, no capturas
+// reales de cada sitio). Reemplázalos por screenshots reales del producto en
+// /public/images — el componente ya los muestra dentro de un frame de
+// navegador (ver ProjectCard.jsx), no requiere cambios de código.
 export const PROJECTS = [
   {
     id: "p1",
@@ -44,6 +59,6 @@ export const PROJECTS = [
     tag: "Fullstack",
     meta: "Next.js • NestJS • MongoDB • DaisyUI",
     href: "https://powerleds.net",
-    image: "/images/powerleds-bg.webp",
+    image: "/images/powerleds.webp",
   },
 ];

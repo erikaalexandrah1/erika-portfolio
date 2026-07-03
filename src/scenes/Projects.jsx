@@ -1,20 +1,51 @@
 import React, { useMemo, useRef, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import Navbar from "../components/Navbar";
 import Seo from "../components/Seo";
 import ProjectCard from "../components/ProjectsComponents/ProjectCard";
 import Button from "../components/ui/Button";
 import Eyebrow from "../components/ui/Eyebrow";
 import PageBackground from "../components/ui/PageBackground";
-import { CATEGORIES, PROJECTS } from "../data/projectsInformation";
+import { CATEGORIES, PROJECTS, tagColor } from "../data/projectsInformation";
 
 const EASE = [0.2, 0.65, 0.3, 0.9];
+const SPRING = { type: "spring", stiffness: 300, damping: 28 };
 const fadeUp = (delay = 0) => ({
   initial: { y: 16, opacity: 0 },
   whileInView: { y: 0, opacity: 1 },
   viewport: { amount: 0.6, once: true },
   transition: { duration: 0.6, ease: EASE, delay },
 });
+
+function FilterPill({ label, active, onClick }) {
+  const color = label === "All" ? null : tagColor(label, 1);
+  return (
+    <button
+      onClick={onClick}
+      className="relative px-3 py-1.5 rounded-full text-sm uppercase tracking-wide"
+    >
+      {active && (
+        <motion.span
+          layoutId="projectFilterPill"
+          className="absolute inset-0 rounded-full border"
+          style={{
+            borderColor: color ? tagColor(label, 0.4) : "rgba(255,255,255,0.2)",
+            backgroundColor: color ? tagColor(label, 0.14) : "rgba(255,255,255,0.12)",
+          }}
+          transition={SPRING}
+        />
+      )}
+      <span
+        className={`relative flex items-center gap-1.5 transition-colors duration-200 ${
+          active ? "text-white" : "text-white/55 hover:text-white/85"
+        }`}
+      >
+        {color && <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: color }} />}
+        {label}
+      </span>
+    </button>
+  );
+}
 
 export default function Projects() {
   const [filter, setFilter] = useState("All");
@@ -56,19 +87,10 @@ export default function Projects() {
             and frontend interactions — focused on clarity, performance and human-centred UX.
           </motion.p>
 
-          {/* Filters */}
-          <motion.div className="mt-8 flex flex-wrap items-center gap-2" {...fadeUp(0.1)}>
+          {/* Filtros con indicador deslizante (layoutId) */}
+          <motion.div className="mt-8 flex flex-wrap items-center gap-1" {...fadeUp(0.1)}>
             {CATEGORIES.map((c) => (
-              <button
-                key={c}
-                onClick={() => setFilter(c)}
-                className={`px-3 py-1.5 rounded-full text-sm uppercase tracking-wide border transition-colors
-                  ${filter === c
-                    ? "bg-white/15 border-white/20"
-                    : "bg-white/5 border-white/10 hover:bg-white/10"}`}
-              >
-                {c}
-              </button>
+              <FilterPill key={c} label={c} active={filter === c} onClick={() => setFilter(c)} />
             ))}
           </motion.div>
         </div>
@@ -76,11 +98,19 @@ export default function Projects() {
 
       {/* CARD GRID */}
       <section className="relative pb-20">
-        <div className="mx-auto w-[min(1100px,92vw)] grid grid-cols-1 sm:grid-cols-2 gap-8">
-          {filtered.map((p, i) => (
-            <ProjectCard key={p.id} item={p} onClick={() => {}} />
-          ))}
+        <div className="mx-auto w-[min(1100px,92vw)] grid grid-cols-1 sm:grid-cols-2 gap-8 items-start">
+          <AnimatePresence>
+            {filtered.map((p, i) => (
+              <ProjectCard key={p.id} item={p} index={i} />
+            ))}
+          </AnimatePresence>
         </div>
+
+        {filtered.length === 0 && (
+          <div className="mx-auto w-[min(1100px,92vw)] text-center text-white/50 py-20">
+            No projects in this category yet.
+          </div>
+        )}
       </section>
 
       {/* CTA final */}
