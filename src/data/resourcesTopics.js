@@ -1,15 +1,15 @@
 // Pilares = categorías para filtrar.
-// Mantengo 4 categorías amplias para que la página no se sienta vacía ni demasiado académica.
+// Esta clasificación es más limpia para tu página:
+// 1. Relational Databases: SQL, PostgreSQL, teoría relacional, índices, consultas.
+// 2. NoSQL & Distributed: MongoDB, Neo4J, CitusData, bases distribuidas.
+// 3. Backend: NestJS, APIs, Swagger, despliegue.
+// 4. Business Intelligence & Big Data: Datamart, Pentaho, Metabase, Spark, Databricks.
+
 export const PILLARS = [
   {
-    id: "relational-db",
+    id: "relational-databases",
     label: "Relational Databases",
     color: "#6d8bff",
-  },
-  {
-    id: "db-systems",
-    label: "Database Systems",
-    color: "#8f76d6",
   },
   {
     id: "nosql-distributed",
@@ -17,21 +17,26 @@ export const PILLARS = [
     color: "#4fd1a1",
   },
   {
-    id: "backend-data-apps",
-    label: "Backend & Data Apps",
+    id: "backend",
+    label: "Backend",
     color: "#ffc861",
+  },
+  {
+    id: "bi-bigdata",
+    label: "Business Intelligence & Big Data",
+    color: "#c07bff",
   },
 ];
 
-// PDFs: los dejo vacíos para que tú los llenes luego.
-// length: lo dejo vacío cuando no pude confirmarlo con seguridad.
-// title: lo mejoré para que se vea más atractivo en tu página, sin perder el tema real del video.
-
 export const TOPICS = [
+  // ---------------------------------------------------------------------------
+  // RELATIONAL DATABASES
+  // ---------------------------------------------------------------------------
+
   {
     id: "database-fundamentals-smbd-design-architecture",
     title: "Bases de Datos desde Cero: SMBD, Diseño y Arquitectura",
-    pillar: "relational-db",
+    pillar: "relational-databases",
     video: {
       url: "https://www.youtube.com/watch?v=c496hSrltNk",
       length: "",
@@ -39,9 +44,9 @@ export const TOPICS = [
     pdfs: [],
   },
   {
-    id: "conceptual-design-extended-er-model",
-    title: "Diseño Conceptual de Bases de Datos: Modelo Entidad-Relación Extendido",
-    pillar: "relational-db",
+    id: "conceptual-design-er-model",
+    title: "Diseño Conceptual de Bases de Datos con Modelo Entidad-Relación",
+    pillar: "relational-databases",
     video: {
       url: "https://www.youtube.com/watch?v=tkpjVRwdbhk",
       length: "",
@@ -49,9 +54,19 @@ export const TOPICS = [
     pdfs: [],
   },
   {
-    id: "sql-practical-exercises",
+    id: "postgresql-installation-local-docker-pgadmin",
+    title: "PostgreSQL desde Cero: Instalación Local, Docker, SQL y pgAdmin",
+    pillar: "relational-databases",
+    video: {
+      url: "https://www.youtube.com/watch?v=wFqWqQ1MDMI",
+      length: "",
+    },
+    pdfs: [],
+  },
+  {
+    id: "sql-practical-queries",
     title: "SQL en Práctica: Consultas, Filtros y Ejercicios Guiados",
-    pillar: "relational-db",
+    pillar: "relational-databases",
     video: {
       url: "https://www.youtube.com/watch?v=3WcMubDJoIU",
       length: "",
@@ -59,9 +74,9 @@ export const TOPICS = [
     pdfs: [],
   },
   {
-    id: "relational-algebra-exercises",
+    id: "relational-algebra-joins-division",
     title: "Álgebra Relacional sin Miedo: Joins, Producto Cartesiano y División",
-    pillar: "relational-db",
+    pillar: "relational-databases",
     video: {
       url: "https://www.youtube.com/watch?v=zINSeqtfG0A",
       length: "",
@@ -71,7 +86,7 @@ export const TOPICS = [
   {
     id: "normalization-1nf-2nf-3nf",
     title: "Normalización de Bases de Datos: 1FN, 2FN y 3FN Explicadas Fácil",
-    pillar: "relational-db",
+    pillar: "relational-databases",
     video: {
       url: "https://www.youtube.com/watch?v=pGN6YAvwd0c",
       length: "",
@@ -80,8 +95,8 @@ export const TOPICS = [
   },
   {
     id: "transactions-recovery-commit-rollback",
-    title: "Transacciones y Recuperación: Commit, Rollback y Consistencia",
-    pillar: "relational-db",
+    title: "Transacciones en Bases de Datos: Commit, Rollback y Recuperación",
+    pillar: "relational-databases",
     video: {
       url: "https://www.youtube.com/watch?v=n6CB2irBtbU",
       length: "",
@@ -89,9 +104,9 @@ export const TOPICS = [
     pdfs: [],
   },
   {
-    id: "concurrency-control-locking-protocols",
+    id: "concurrency-control-locking",
     title: "Control de Concurrencia: Bloqueos, Protocolos y Manejo de Conflictos",
-    pillar: "relational-db",
+    pillar: "relational-databases",
     video: {
       url: "https://www.youtube.com/watch?v=cY8-3-DunbA",
       length: "",
@@ -99,19 +114,9 @@ export const TOPICS = [
     pdfs: [],
   },
   {
-    id: "postgresql-installation-docker-pgadmin",
-    title: "Instala PostgreSQL como Pro: Local, Docker, SQL y pgAdmin",
-    pillar: "db-systems",
-    video: {
-      url: "https://www.youtube.com/watch?v=wFqWqQ1MDMI",
-      length: "",
-    },
-    pdfs: [],
-  },
-  {
     id: "file-organization-heap-sequential-hash",
     title: "Organización de Archivos: Montículo, Secuencial y Hash",
-    pillar: "db-systems",
+    pillar: "relational-databases",
     video: {
       url: "https://www.youtube.com/watch?v=qszrU_oPtnw",
       length: "",
@@ -120,8 +125,8 @@ export const TOPICS = [
   },
   {
     id: "postgresql-file-organization-scans-explain",
-    title: "PostgreSQL por Dentro: Archivos, Scans y EXPLAIN",
-    pillar: "db-systems",
+    title: "PostgreSQL por Dentro: Organización de Archivos, Scans y EXPLAIN",
+    pillar: "relational-databases",
     video: {
       url: "https://www.youtube.com/watch?v=kP5luW7AV94",
       length: "",
@@ -129,9 +134,9 @@ export const TOPICS = [
     pdfs: [],
   },
   {
-    id: "indexes-primary-clustered-secondary",
-    title: "Índices en Bases de Datos: Primarios, Agrupados y Secundarios",
-    pillar: "db-systems",
+    id: "database-indexes-primary-clustered-secondary",
+    title: "Índices en Bases de Datos: Primarios, Agrupados, Secundarios y Multinivel",
+    pillar: "relational-databases",
     video: {
       url: "https://www.youtube.com/watch?v=kf5pluNGVQQ",
       length: "",
@@ -140,8 +145,8 @@ export const TOPICS = [
   },
   {
     id: "postgresql-btree-hash-indexes",
-    title: "Crea Índices en PostgreSQL: B-Tree, Hash y Diseño Inteligente",
-    pillar: "db-systems",
+    title: "Índices en PostgreSQL: B-Tree, Hash y Optimización de Consultas",
+    pillar: "relational-databases",
     video: {
       url: "https://www.youtube.com/watch?v=PoeCNc4ED2E",
       length: "",
@@ -151,7 +156,7 @@ export const TOPICS = [
   {
     id: "query-processing-heuristic-optimization",
     title: "Procesamiento de Consultas: Optimización Heurística Paso a Paso",
-    pillar: "db-systems",
+    pillar: "relational-databases",
     video: {
       url: "https://www.youtube.com/watch?v=IY04SR5zEPU",
       length: "",
@@ -159,9 +164,9 @@ export const TOPICS = [
     pdfs: [],
   },
   {
-    id: "query-processing-heuristic-optimization-part-2",
+    id: "query-processing-optimization-part-2",
     title: "Optimización de Consultas Parte 2: Cómo Piensa el Motor de Base de Datos",
-    pillar: "db-systems",
+    pillar: "relational-databases",
     video: {
       url: "https://www.youtube.com/watch?v=p4GO1vuhUfg",
       length: "",
@@ -171,7 +176,7 @@ export const TOPICS = [
   {
     id: "physical-execution-trees-nested-loop-index-lookup",
     title: "Árboles de Ejecución Física: Nested Loop Join e Index Lookup",
-    pillar: "db-systems",
+    pillar: "relational-databases",
     video: {
       url: "https://www.youtube.com/watch?v=4gMw6Tk0RJc",
       length: "",
@@ -180,8 +185,8 @@ export const TOPICS = [
   },
   {
     id: "database-2-midterm-review",
-    title: "Repaso Pre-Parcial: Bases de Datos 2 en una Ruta Clara",
-    pillar: "db-systems",
+    title: "Repaso Pre-Parcial: Archivos, Índices y Procesamiento de Consultas",
+    pillar: "relational-databases",
     video: {
       url: "https://www.youtube.com/watch?v=aKM4HTgRUpY",
       length: "",
@@ -190,14 +195,19 @@ export const TOPICS = [
   },
   {
     id: "review-files-indexes-query-processing-distributed",
-    title: "Repaso Final: Archivos, Índices, Consultas y Bases Distribuidas",
-    pillar: "db-systems",
+    title: "Repaso Final: Organización de Archivos, Índices, Consultas y Bases Distribuidas",
+    pillar: "relational-databases",
     video: {
       url: "https://www.youtube.com/watch?v=X-n77zyPOGw",
       length: "",
     },
     pdfs: [],
   },
+
+  // ---------------------------------------------------------------------------
+  // NOSQL & DISTRIBUTED
+  // ---------------------------------------------------------------------------
+
   {
     id: "neo4j-auradb-cypher-graph-modeling",
     title: "Neo4J desde Cero: AuraDB, Cypher y Modelado con Grafos",
@@ -249,8 +259,8 @@ export const TOPICS = [
     pdfs: [],
   },
   {
-    id: "distributed-fragmentation-vertical-horizontal-mixed",
-    title: "Fragmentación Distribuida: Vertical, Horizontal y Mixta sin Complicarse",
+    id: "distributed-database-modeling-fragmentation",
+    title: "Modelado en Bases de Datos Distribuidas: Fragmentación y Diseño",
     pillar: "nosql-distributed",
     video: {
       url: "https://www.youtube.com/watch?v=79CicdOWSiM",
@@ -270,7 +280,7 @@ export const TOPICS = [
   },
   {
     id: "citusdata-postgresql-cluster",
-    title: "Crea un Cluster con CitusData y PostgreSQL Distribuido",
+    title: "CitusData + PostgreSQL: Crea un Cluster de Base de Datos Distribuida",
     pillar: "nosql-distributed",
     video: {
       url: "https://www.youtube.com/watch?v=9kIPx-BEL_0",
@@ -288,10 +298,15 @@ export const TOPICS = [
     },
     pdfs: [],
   },
+
+  // ---------------------------------------------------------------------------
+  // BACKEND
+  // ---------------------------------------------------------------------------
+
   {
     id: "nestjs-basics-controllers-services-modules",
     title: "NestJS desde Cero: Controladores, Servicios, Módulos e Instalación",
-    pillar: "backend-data-apps",
+    pillar: "backend",
     video: {
       url: "https://www.youtube.com/watch?v=6hew-sMZZSQ",
       length: "1:24:37",
@@ -299,29 +314,9 @@ export const TOPICS = [
     pdfs: [],
   },
   {
-    id: "nestjs-theory-part-2",
-    title: "NestJS Parte 2: Arquitectura Backend Explicada con Claridad",
-    pillar: "backend-data-apps",
-    video: {
-      url: "https://www.youtube.com/watch?v=El56y_GdiBg",
-      length: "",
-    },
-    pdfs: [],
-  },
-  {
-    id: "nestjs-mongoose-restapi-crud",
-    title: "API REST con NestJS y Mongoose: CRUD Básico Paso a Paso",
-    pillar: "backend-data-apps",
-    video: {
-      url: "https://www.youtube.com/watch?v=_ZTT4J51PdU",
-      length: "",
-    },
-    pdfs: [],
-  },
-  {
     id: "nestjs-mongodb-mongoose-env-variables",
     title: "NestJS + MongoDB: Mongoose, CRUD y Variables de Entorno",
-    pillar: "backend-data-apps",
+    pillar: "backend",
     video: {
       url: "https://www.youtube.com/watch?v=BrvJr-Hv4G4",
       length: "1:31:33",
@@ -331,17 +326,32 @@ export const TOPICS = [
   {
     id: "nestjs-swagger-railway-cors",
     title: "Documenta y Despliega tu API NestJS: Swagger, Railway y CORS",
-    pillar: "backend-data-apps",
+    pillar: "backend",
     video: {
       url: "https://www.youtube.com/watch?v=1qBJk0_sLpE",
       length: "54:22",
     },
     pdfs: [],
   },
+
+  // ---------------------------------------------------------------------------
+  // BUSINESS INTELLIGENCE & BIG DATA
+  // ---------------------------------------------------------------------------
+
+  {
+    id: "dimensional-modeling-bi",
+    title: "Modelado Dimensional para BI: Hechos, Dimensiones y Diseño Conceptual",
+    pillar: "bi-bigdata",
+    video: {
+      url: "https://www.youtube.com/watch?v=QAKq6ltudj0",
+      length: "",
+    },
+    pdfs: [],
+  },
   {
     id: "datamart-from-relational-model",
     title: "Construye un Datamart desde Cero a partir de un Modelo Relacional",
-    pillar: "backend-data-apps",
+    pillar: "bi-bigdata",
     video: {
       url: "https://www.youtube.com/watch?v=QqjSrlah1U4",
       length: "",
@@ -349,11 +359,11 @@ export const TOPICS = [
     pdfs: [],
   },
   {
-    id: "dimensional-modeling-bi",
-    title: "Modelado Dimensional para BI: Hechos, Dimensiones y Diseño Conceptual",
-    pillar: "backend-data-apps",
+    id: "datamart-metabase-dashboard",
+    title: "Conecta un Datamart a Metabase y Crea Dashboards Estadísticos",
+    pillar: "bi-bigdata",
     video: {
-      url: "https://www.youtube.com/watch?v=usOPb8G3f-Y",
+      url: "https://www.youtube.com/watch?v=ih4hGFv9Ke8",
       length: "",
     },
     pdfs: [],
@@ -361,7 +371,7 @@ export const TOPICS = [
   {
     id: "pentaho-pdi-etl-part-1",
     title: "Pentaho Data Integration: Construye Flujos ETL desde Cero",
-    pillar: "backend-data-apps",
+    pillar: "bi-bigdata",
     video: {
       url: "https://www.youtube.com/watch?v=5adJfQhih0E",
       length: "1:27:31",
@@ -371,10 +381,20 @@ export const TOPICS = [
   {
     id: "pentaho-pdi-etl-part-2",
     title: "Pentaho Data Integration Parte 2: ETL Más Limpio y Profesional",
-    pillar: "backend-data-apps",
+    pillar: "bi-bigdata",
     video: {
       url: "https://www.youtube.com/watch?v=eMc6hed00aQ",
       length: "1:13:14",
+    },
+    pdfs: [],
+  },
+  {
+    id: "databricks-community-apache-spark",
+    title: "Cómo Utilizar Databricks Community como herramienta con Apache Spark para análisis de Big Data.",
+    pillar: "bi-bigdata",
+    video: {
+      url: "https://www.youtube.com/watch?v=QY0a0pIm5fA",
+      length: "",
     },
     pdfs: [],
   },
