@@ -83,11 +83,11 @@ function FullscreenMenu({ open, onClose }) {
         {/* SoftBackground */}
         <div className="absolute inset-0 -z-10 pointer-events-none" aria-hidden="true">
           <SoftBackground
-            baseA="#0b0b0b"
-            baseB="#050505"
-            r1="rgba(88,113,255,0.12)"
-            r2="rgba(255,88,168,0.10)"
-            r3="rgba(0,255,200,0.08)"
+            baseA="#0a0a0f"
+            baseB="#050506"
+            r1="rgba(91,108,255,0.16)"
+            r2="rgba(194,91,255,0.12)"
+            r3="rgba(0,200,180,0.08)"
           />
         </div>
 

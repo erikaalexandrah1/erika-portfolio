@@ -5,7 +5,7 @@ import Navbar from "../components/Navbar";
 import Seo from "../components/Seo";
 import useDeferredMount from "../hooks/useDeferredMount";
 
-import BackgroundFX from "../components/HomeComponents/BackgroundFX";
+import PageBackground from "../components/ui/PageBackground";
 const HomeCanvas = lazy(() => import("../components/HomeComponents/HomeCanvas"));
 
 import Button from "../components/ui/Button";
@@ -28,7 +28,7 @@ export default function Home() {
   return (
     <div className="relative w-full h-screen overflow-hidden">
       <Seo path="/" />
-      <BackgroundFX />
+      <PageBackground />
 
       <Navbar />
 
@@ -139,7 +139,7 @@ export default function Home() {
                 className="pointer-events-none absolute inset-0 opacity-70"
                 style={{
                   background:
-                    "radial-gradient(700px 300px at 20% 20%, rgba(88,113,255,0.14), transparent 60%), radial-gradient(600px 280px at 80% 30%, rgba(255,88,168,0.12), transparent 55%), radial-gradient(600px 280px at 50% 90%, rgba(0,255,200,0.08), transparent 55%)",
+                    "radial-gradient(700px 300px at 20% 20%, rgba(91,108,255,0.16), transparent 60%), radial-gradient(600px 280px at 80% 30%, rgba(194,91,255,0.14), transparent 55%), radial-gradient(600px 280px at 50% 90%, rgba(0,200,180,0.08), transparent 55%)",
                   mixBlendMode: "screen",
                 }}
                 aria-hidden

@@ -1,4 +1,9 @@
-export default function BackgroundFX() {
+/**
+ * Fondo compartido del design system: base fría con grid sutil (look SaaS)
+ * y glows azul/morado, coherente con el hero de Home. Úsalo en cualquier
+ * vista para heredar la misma paleta y atmósfera.
+ */
+export default function PageBackground() {
   return (
     <>
       {/* Base profunda con leve tinte frío */}
@@ -26,7 +31,7 @@ export default function BackgroundFX() {
         aria-hidden
       />
 
-      {/* Glow de acento (arriba) */}
+      {/* Glow de acento azul/morado */}
       <div
         className="absolute inset-0 -z-10 pointer-events-none"
         style={{

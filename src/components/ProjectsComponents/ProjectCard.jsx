@@ -74,7 +74,7 @@ function ProjectCard({ item, onClick }) {
         className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
         style={{
           background:
-            "radial-gradient(600px 260px at 20% 20%, rgba(88,113,255,0.12), transparent 60%), radial-gradient(520px 240px at 80% 20%, rgba(255,88,168,0.10), transparent 60%), radial-gradient(560px 280px at 50% 90%, rgba(0,255,200,0.08), transparent 60%)",
+            "radial-gradient(600px 260px at 20% 20%, rgba(91,108,255,0.14), transparent 60%), radial-gradient(520px 240px at 80% 20%, rgba(194,91,255,0.12), transparent 60%), radial-gradient(560px 280px at 50% 90%, rgba(0,200,180,0.08), transparent 60%)",
           mixBlendMode: "screen",
         }}
       />

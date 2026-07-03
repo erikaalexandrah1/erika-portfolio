@@ -20,7 +20,7 @@ function Starfield({ speed = 2.2, count = 4200, spread = 12, depth = 15, color =
     const palette = [
       new THREE.Color("#ffffff"),
       new THREE.Color("#bcd0ff"), // azul suave
-      new THREE.Color("#ffd9ec"), // rosa suave
+      new THREE.Color("#e3c9ff"), // morado suave
       new THREE.Color("#c9fff2"), // cyan suave
     ];
 
@@ -132,11 +132,11 @@ export default function SceneTransition({
   // duración total del overlay (ms)
   duration = 2000,
   // paleta por defecto (tu paleta base)
-  a = "#0b0b0b",
-  b = "#050505",
-  r1 = "rgba(88,113,255,0.12)",
-  r2 = "rgba(255,88,168,0.10)",
-  r3 = "rgba(0,255,200,0.08)",
+  a = "#0a0a0f",
+  b = "#050506",
+  r1 = "rgba(91,108,255,0.16)",
+  r2 = "rgba(194,91,255,0.12)",
+  r3 = "rgba(0,200,180,0.08)",
   // opciones del starfield
   starColor = "#ffffff",
 }) {

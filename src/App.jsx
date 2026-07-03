@@ -57,11 +57,11 @@ function TransitionLayer({ children }) {
         <SceneTransition
           active={active}
           onFinish={() => {}}
-          a="#0b0b0b"
-          b="#07070a"
-          r1="rgba(58,96,255,0.15)"
-          r2="rgba(255,112,164,0.10)"
-          r3="rgba(0,220,180,0.08)"
+          a="#0a0a0f"
+          b="#050506"
+          r1="rgba(91,108,255,0.16)"
+          r2="rgba(194,91,255,0.12)"
+          r3="rgba(0,200,180,0.08)"
           starColor="#eef6ff"
         />
       )}

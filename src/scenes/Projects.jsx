@@ -5,6 +5,7 @@ import Seo from "../components/Seo";
 import ProjectCard from "../components/ProjectsComponents/ProjectCard";
 import Button from "../components/ui/Button";
 import Eyebrow from "../components/ui/Eyebrow";
+import PageBackground from "../components/ui/PageBackground";
 import { CATEGORIES, PROJECTS } from "../data/projectsInformation";
 
 const EASE = [0.2, 0.65, 0.3, 0.9];
@@ -38,17 +39,7 @@ export default function Projects() {
         description="Case studies across databases, data pipelines, backend design and frontend interactions — focused on clarity, performance and human-centred UX."
         path="/projects"
       />
-      {/* Background */}
-      <div
-        className="absolute inset-0 -z-10 pointer-events-none
-          [background-image:radial-gradient(circle_at_20%_20%,rgba(88,113,255,0.12),transparent_60%),radial-gradient(circle_at_80%_30%,rgba(255,88,168,0.10),transparent_55%),radial-gradient(circle_at_50%_80%,rgba(0,255,200,0.08),transparent_50%),linear-gradient(180deg,#0b0b0b,#050505)]
-          [background-blend-mode:screen]"
-      />
-      <div
-        className="absolute inset-0 -z-10 pointer-events-none mix-blend-soft-light opacity-45
-          [background-image:radial-gradient(rgba(255,255,255,.08)_1px,transparent_1.2px)]
-          [background-size:8px_8px]"
-      />
+      <PageBackground />
 
       <Navbar />
 

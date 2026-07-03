@@ -2,6 +2,9 @@ import React from "react";
 import { motion } from "framer-motion";
 import Navbar from "../components/Navbar";
 import Seo from "../components/Seo";
+import Button from "../components/ui/Button";
+import Eyebrow from "../components/ui/Eyebrow";
+import PageBackground from "../components/ui/PageBackground";
 
 /* ====== Data (ajusta a tu historia real) ====== */
 const TIMELINE = [
@@ -74,14 +77,14 @@ const fadeIn = (d = 0) => ({
   transition: { duration: 0.6, ease: EASE, delay: d },
 });
 
-/* Color tags (azul/rosa/cian de tu paleta) */
+/* Color tags (azul/morado de la paleta de marca) */
 const TAG_STYLES = {
   Role: "border-white/15 bg-white/5",
-  Teaching: "border-[rgba(255,88,168,0.25)] bg-[rgba(255,88,168,0.10)]",
-  Project: "border-[rgba(88,113,255,0.25)] bg-[rgba(88,113,255,0.12)]",
-  Certification: "border-[rgba(0,255,220,0.25)] bg-[rgba(0,255,200,0.08)]",
-  Backend: "border-[rgba(88,113,255,0.25)] bg-[rgba(88,113,255,0.12)]",
-  Data: "border-[rgba(0,255,220,0.25)] bg-[rgba(0,255,200,0.08)]",
+  Teaching: "border-[rgba(194,91,255,0.28)] bg-[rgba(194,91,255,0.12)]",
+  Project: "border-[rgba(91,108,255,0.28)] bg-[rgba(91,108,255,0.14)]",
+  Certification: "border-[rgba(0,200,180,0.25)] bg-[rgba(0,200,180,0.08)]",
+  Backend: "border-[rgba(91,108,255,0.28)] bg-[rgba(91,108,255,0.14)]",
+  Data: "border-[rgba(0,200,180,0.25)] bg-[rgba(0,200,180,0.08)]",
 };
 
 export default function About() {
@@ -92,21 +95,7 @@ export default function About() {
         description="Systems Engineering student and Software Developer, teaching assistant, and physician — bringing precision, empathy and rigor to reliable, human-centered software."
         path="/about"
       />
-      {/* ===== Fondo con tu misma estética ===== */}
-      <div
-        className="
-          absolute inset-0 -z-10 pointer-events-none
-          [background-image:radial-gradient(circle_at_20%_20%,rgba(88,113,255,0.12),transparent_60%),radial-gradient(circle_at_80%_30%,rgba(255,88,168,0.1),transparent_55%),radial-gradient(circle_at_50%_80%,rgba(0,255,200,0.08),transparent_50%),linear-gradient(180deg,#0b0b0b,#050505)]
-          [background-blend-mode:screen]
-        "
-      />
-      <div
-        className="
-          absolute inset-0 -z-10 pointer-events-none mix-blend-soft-light opacity-45
-          [background-image:radial-gradient(rgba(255,255,255,.08)_1px,transparent_1.2px)]
-          [background-size:8px_8px]
-        "
-      />
+      <PageBackground />
 
       <Navbar />
 
@@ -116,10 +105,8 @@ export default function About() {
         <section className="pt-28 pb-12">
           <div className="mx-auto w-[min(1100px,92vw)]">
             <motion.div {...fadeIn(0)}>
-              <div className="text-xs text-white/60 uppercase tracking-wider">
-                About me
-              </div>
-              <h1 className="mt-2 text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight">
+              <Eyebrow>About me</Eyebrow>
+              <h1 className="mt-4 text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight">
                 I build systems that feel clear.
               </h1>
               <p className="mt-4 max-w-2xl text-white/75">
@@ -225,18 +212,12 @@ export default function About() {
               className="mt-6 flex justify-center gap-3"
               {...fadeIn(0.1)}
             >
-              <a
-                href="/projects"
-                className="rounded-full px-4 py-2.5 border border-white/10 bg-white/5 hover:bg-white/10 text-sm uppercase tracking-wide"
-              >
-                View projects →
-              </a>
-              <a
-                href="/contact"
-                className="rounded-full px-4 py-2.5 border border-white/10 bg-white/15 hover:bg-white/20 text-sm uppercase tracking-wide"
-              >
-                Contact
-              </a>
+              <Button to="/contact" variant="primary" size="lg">
+                Contact →
+              </Button>
+              <Button to="/projects" variant="secondary" size="lg">
+                View projects
+              </Button>
             </motion.div>
           </div>
         </section>
@@ -273,11 +254,11 @@ function Node({ year, tag }) {
   // color del nodo según tag
   const color =
     tag === "Project"
-      ? "rgba(88,113,255,0.9)"
+      ? "rgba(91,108,255,0.9)"
       : tag === "Certification"
-      ? "rgba(0,255,200,0.9)"
+      ? "rgba(0,200,180,0.9)"
       : tag === "Teaching"
-      ? "rgba(255,88,168,0.95)"
+      ? "rgba(194,91,255,0.95)"
       : "rgba(255,255,255,0.9)";
 
   return (
