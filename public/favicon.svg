@@ -5,9 +5,9 @@
       <stop offset="1" stop-color="#080808"/>
     </linearGradient>
     <linearGradient id="ink" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#5871ff"/>
-      <stop offset="0.55" stop-color="#ff58a8"/>
-      <stop offset="1" stop-color="#00ffc8"/>
+      <stop offset="0" stop-color="#5b6cff"/>
+      <stop offset="0.5" stop-color="#a25bff"/>
+      <stop offset="1" stop-color="#ff5fa8"/>
     </linearGradient>
   </defs>
   <rect x="1.5" y="1.5" width="61" height="61" rx="16" fill="url(#bg)" stroke="url(#ink)" stroke-width="2"/>
