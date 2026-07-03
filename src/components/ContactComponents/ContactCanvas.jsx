@@ -11,9 +11,6 @@ export default function ContactCanvas() {
       camera={{ position: [0, 0, 6], fov: 50 }}
       style={{ width: "100%", height: "100%" }}
     >
-      <ambientLight intensity={0.08} />
-      <pointLight position={[0, 0, 5]} intensity={1.2} color="#ff00ff" />
-      <pointLight position={[-4, -2, -5]} intensity={1.0} color="#00ffff" />
       <OrbitalArcs />
     </Canvas>
   );

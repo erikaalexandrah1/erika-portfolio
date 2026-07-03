@@ -29,10 +29,10 @@ const OrbitalArcsMaterial = shaderMaterial(
     uniform float uAspect;
     uniform float uIntensity;
 
-    // Paleta (normalizada 0..1)
-    const vec3 COL_BLUE = vec3(88.0/255.0, 113.0/255.0, 1.0);
-    const vec3 COL_PINK = vec3(1.0, 88.0/255.0, 168.0/255.0);
-    const vec3 COL_CYAN = vec3(0.0, 1.0, 200.0/255.0);
+    // Paleta (normalizada 0..1) — azul / morado de marca + teal muy sutil
+    const vec3 COL_BLUE = vec3(91.0/255.0, 108.0/255.0, 1.0);
+    const vec3 COL_PURPLE = vec3(194.0/255.0, 91.0/255.0, 255.0/255.0);
+    const vec3 COL_CYAN = vec3(0.0, 200.0/255.0, 180.0/255.0);
 
     // Suaviza bordes
     float smooth01(float x, float e0, float e1) {
@@ -135,7 +135,7 @@ const OrbitalArcsMaterial = shaderMaterial(
       // Combinamos colores con tu paleta, muy suaves y sumativos
       vec3 col =
           g1 * COL_BLUE +
-          g2 * COL_PINK +
+          g2 * COL_PURPLE +
           g3 * COL_CYAN;
 
       // Realce mínimo central (un puntito de aura muy tenue)
@@ -149,8 +149,8 @@ const OrbitalArcsMaterial = shaderMaterial(
       float vignette = smoothstep(1.1, 0.6, length(uv));
       col *= vignette;
 
-      // Muy tenue para integrarse con tu .resources__bg
-      float alpha = 0.08; // puedes subir a 0.12 si lo quieres un pelín más presente
+      // Tenue para integrarse con el fondo, pero con algo más de presencia
+      float alpha = 0.14;
       gl_FragColor = vec4(col, alpha);
     }
   `

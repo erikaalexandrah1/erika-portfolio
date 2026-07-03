@@ -11,8 +11,10 @@ function FullscreenMenu({ open, onClose }) {
   const [visible, setVisible] = useState(open);
   const [activeIndex, setActiveIndex] = useState(0);
   const [indicatorTop, setIndicatorTop] = useState(0);
+  const [parallax, setParallax] = useState({ x: 0, y: 0 });
   const itemRefs = useRef([]);
   const hoverSound = useRef(null);
+  const clickSound = useRef(null);
   const { navigateWithTransition } = useSceneTransition();
 
   // Montar/desmontar con animación
@@ -51,14 +53,48 @@ function FullscreenMenu({ open, onClose }) {
     if (el) setIndicatorTop(el.offsetTop);
   }, [activeIndex, open]);
 
-  // Sonido hover
+  // Sonidos: hover (loop suave) y click (confirmación, tono ligeramente distinto)
   useEffect(() => {
     hoverSound.current = new Audio("/sounds/hover.mp3");
     hoverSound.current.volume = 0.3;
     hoverSound.current.load();
+
+    clickSound.current = new Audio("/sounds/hover2.mp3");
+    clickSound.current.volume = 0.45;
+    clickSound.current.load();
   }, []);
 
+  // Micro-parallax del fondo según la posición del mouse (look tipo consola)
+  useEffect(() => {
+    if (!open) return;
+    const onMove = (e) => {
+      const nx = e.clientX / window.innerWidth - 0.5;
+      const ny = e.clientY / window.innerHeight - 0.5;
+      setParallax({ x: nx * 16, y: ny * 16 });
+    };
+    window.addEventListener("mousemove", onMove);
+    return () => window.removeEventListener("mousemove", onMove);
+  }, [open]);
+
+  const playHover = (i) => {
+    const el = hoverSound.current;
+    if (!el) return;
+    el.currentTime = 0;
+    // pitch ligeramente distinto por ítem para dar sensación de "selección" viva
+    el.playbackRate = 0.94 + i * 0.05;
+    el.play().catch(() => {});
+  };
+
+  const playClick = () => {
+    const el = clickSound.current;
+    if (!el) return;
+    el.currentTime = 0;
+    el.playbackRate = 1;
+    el.play().catch(() => {});
+  };
+
   const handleNavigation = (anchor) => {
+    playClick();
     // El overlay vive por encima del router (ver App/TransitionLayer), así que
     // sobrevive al cambio de ruta y cubre la carga de la página destino.
     onClose();
@@ -80,8 +116,12 @@ function FullscreenMenu({ open, onClose }) {
         {/* Fondo base para el blend */}
         <div className="absolute inset-0 -z-20 bg-black pointer-events-none" aria-hidden="true" />
 
-        {/* SoftBackground */}
-        <div className="absolute inset-0 -z-10 pointer-events-none" aria-hidden="true">
+        {/* SoftBackground con micro-parallax */}
+        <div
+          className="absolute inset-0 -z-10 pointer-events-none transition-transform duration-300 ease-out"
+          style={{ transform: `translate3d(${parallax.x}px, ${parallax.y}px, 0)` }}
+          aria-hidden="true"
+        >
           <SoftBackground
             baseA="#0a0a0f"
             baseB="#050506"
@@ -92,15 +132,16 @@ function FullscreenMenu({ open, onClose }) {
         </div>
 
         {/* Canvas con OrbitalArcs (no bloquea interacciones) */}
-        <div className="absolute inset-0 -z-5 pointer-events-none" aria-hidden="true">
+        <div
+          className="absolute inset-0 -z-5 pointer-events-none transition-transform duration-300 ease-out"
+          style={{ transform: `translate3d(${parallax.x * 0.6}px, ${parallax.y * 0.6}px, 0)` }}
+          aria-hidden="true"
+        >
           <Canvas
             gl={{ alpha: true }}
             camera={{ position: [0, 0, 6], fov: 50 }}
             style={{ width: "100%", height: "100%" }}
           >
-            <ambientLight intensity={0.08} />
-            <pointLight position={[0, 0, 5]} intensity={1.2} color="#ff00ff" />
-            <pointLight position={[-4, -2, -5]} intensity={1.0} color="#00ffff" />
             <OrbitalArcs />
           </Canvas>
         </div>
@@ -124,8 +165,12 @@ function FullscreenMenu({ open, onClose }) {
         <div className="relative">
           <div className="absolute left-0 top-0 bottom-0 w-px bg-white/15" />
           <div
-            className="absolute left-0 w-2 h-16 bg-white/90 rounded-sm shadow-[0_0_24px_rgba(255,255,255,0.35)] transition-all duration-300"
-            style={{ top: `${indicatorTop}px` }}
+            className="absolute left-0 w-2 h-16 rounded-sm transition-all duration-300"
+            style={{
+              top: `${indicatorTop}px`,
+              background: "linear-gradient(180deg,#5b6cff,#a25bff,#ff5fa8)",
+              boxShadow: "0 0 22px rgba(160,110,255,0.65), 0 0 46px rgba(91,108,255,0.35)",
+            }}
           />
           <nav className="flex flex-col gap-10 pl-6 text-3xl md:text-5xl font-semibold tracking-wide text-white uppercase">
             {menuItems.map((item, i) => (
@@ -134,18 +179,22 @@ function FullscreenMenu({ open, onClose }) {
                 ref={(el) => (itemRefs.current[i] = el)}
                 onMouseEnter={() => {
                   setActiveIndex(i);
-                  if (hoverSound.current) {
-                    hoverSound.current.currentTime = 0;
-                    hoverSound.current.play().catch(() => {});
-                  }
+                  playHover(i);
                 }}
                 onClick={() => handleNavigation(item.anchor)}
-                className="inline-flex items-center w-fit"
+                className="inline-flex items-baseline gap-4 w-fit"
               >
+                <span
+                  className={`text-xs md:text-sm font-mono tracking-widest transition-colors duration-300 ${
+                    activeIndex === i ? "text-[#c07bff]" : "text-white/25"
+                  }`}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
                 <div
-                  className={`font-extrabold text-left transition-transform duration-300 origin-left cursor-pointer ${
+                  className={`font-extrabold text-left transition-all duration-300 origin-left cursor-pointer ${
                     activeIndex === i
-                      ? "text-white scale-105"
+                      ? "text-white scale-105 [text-shadow:0_0_28px_rgba(160,110,255,0.55)]"
                       : "text-white/40 hover:text-white/70"
                   }`}
                 >
