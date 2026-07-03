@@ -1,5 +1,5 @@
 // src/components/SceneTransition.jsx
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { AnimatePresence, motion } from "framer-motion";
@@ -8,8 +8,12 @@ import { AnimatePresence, motion } from "framer-motion";
  * Starfield: campo de estrellas con desplazamiento en Z.
  * Cada estrella se dibuja con un shader (núcleo brillante + halo redondo),
  * con tamaño y parpadeo (twinkle) propios y un ligero tinte de la paleta.
+ * La velocidad tiene una rampa de entrada suave (ease-in) para que el
+ * "salto" al warp se sienta orgánico en vez de arrancar a velocidad plena.
  */
-function Starfield({ speed = 2.2, count = 4200, spread = 12, depth = 15, color = "#eaf2ff" }) {
+function Starfield({ speed = 2.4, count = 4200, spread = 12, depth = 15, color = "#eaf2ff", rampInSec = 0.5 }) {
+  const startRef = useRef(null);
+
   const { geometry, material, velocities } = useMemo(() => {
     const positions = new Float32Array(count * 3);
     const sizes = new Float32Array(count);
@@ -104,12 +108,21 @@ function Starfield({ speed = 2.2, count = 4200, spread = 12, depth = 15, color =
   }, [geometry, material]);
 
   useFrame((state, delta) => {
+    if (startRef.current === null) startRef.current = state.clock.elapsedTime;
+    const elapsed = state.clock.elapsedTime - startRef.current;
+
     material.uniforms.uTime.value = state.clock.elapsedTime;
     material.uniforms.uPixelRatio.value = state.gl.getPixelRatio();
 
+    // Ease-in cúbico: arranca lento y acelera hasta la velocidad de crucero,
+    // como si el warp "prendiera motores" en vez de arrancar de golpe.
+    const t = Math.min(1, elapsed / rampInSec);
+    const eased = t * t * (3 - 2 * t);
+    const currentSpeed = speed * (0.15 + 0.85 * eased);
+
     const positions = geometry.attributes.position.array;
     // normalizado a ~60fps para velocidad constante en cualquier pantalla
-    const step = speed * delta * 60;
+    const step = currentSpeed * delta * 60;
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
       positions[i3 + 2] += velocities[i] * step;
@@ -125,6 +138,22 @@ function Starfield({ speed = 2.2, count = 4200, spread = 12, depth = 15, color =
   return <points geometry={geometry} material={material} />;
 }
 
+/** Sliding bar indeterminada: refuerza que algo está cargando detrás del overlay. */
+function ProgressSliver() {
+  return (
+    <div className="absolute bottom-0 left-0 right-0 h-[2px] overflow-hidden bg-white/5">
+      <motion.div
+        className="h-full w-1/3"
+        style={{
+          background: "linear-gradient(90deg, transparent, #5b6cff, #a25bff, #ff5fa8, transparent)",
+        }}
+        initial={{ x: "-100%" }}
+        animate={{ x: "300%" }}
+        transition={{ duration: 1.1, ease: [0.4, 0, 0.2, 1], repeat: Infinity }}
+      />
+    </div>
+  );
+}
 
 export default function SceneTransition({
   active,
@@ -160,21 +189,40 @@ export default function SceneTransition({
           {/* ===== Capa 0: base negra para contraste del screen-blend ===== */}
           <div className="absolute inset-0 -z-30 bg-black" />
 
-          {/* ===== Capa 1: radiales + linear con screen blend ===== */}
+          {/* ===== Capa 1: base fría, coherente con PageBackground ===== */}
+          <div
+            className="absolute inset-0 -z-30 pointer-events-none"
+            style={{
+              background: `radial-gradient(1200px 700px at 50% -10%, #14162b 0%, transparent 60%), linear-gradient(180deg, ${a}, ${b})`,
+            }}
+          />
+
+          {/* ===== Capa 2: grid sutil, mismo look SaaS del resto del sitio ===== */}
+          <div
+            className="absolute inset-0 -z-20 pointer-events-none opacity-[0.4]"
+            style={{
+              backgroundImage:
+                "linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)",
+              backgroundSize: "56px 56px",
+              maskImage: "radial-gradient(ellipse 80% 60% at 50% 50%, #000 30%, transparent 80%)",
+              WebkitMaskImage: "radial-gradient(ellipse 80% 60% at 50% 50%, #000 30%, transparent 80%)",
+            }}
+          />
+
+          {/* ===== Capa 3: glows azul/morado, misma forma que PageBackground ===== */}
           <div
             className="absolute inset-0 -z-20 pointer-events-none"
             style={{
               background: `
-                radial-gradient(circle at 20% 20%, ${r1}, transparent 60%),
-                radial-gradient(circle at 80% 30%, ${r2}, transparent 55%),
-                radial-gradient(circle at 50% 80%, ${r3}, transparent 50%),
-                linear-gradient(180deg, ${a}, ${b})
+                radial-gradient(600px 300px at 18% 12%, ${r1}, transparent 60%),
+                radial-gradient(560px 300px at 82% 8%, ${r2}, transparent 60%),
+                radial-gradient(700px 340px at 50% 108%, ${r3}, transparent 55%)
               `,
               mixBlendMode: "screen",
             }}
           />
 
-          {/* ===== Capa 2: grain suave ===== */}
+          {/* ===== Capa 4: grain suave ===== */}
           <div
             className="absolute inset-0 -z-10 pointer-events-none mix-blend-soft-light opacity-45"
             style={{
@@ -183,7 +231,7 @@ export default function SceneTransition({
             }}
           />
 
-          {/* ===== Capa 3: vignette (legibilidad) ===== */}
+          {/* ===== Capa 5: vignette (legibilidad) ===== */}
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
@@ -201,6 +249,29 @@ export default function SceneTransition({
           >
             <Starfield color={starColor} />
           </Canvas>
+
+          {/* ===== Marca central: ancla visual con pulso de marca ===== */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <motion.img
+              src="/logo.svg"
+              alt=""
+              aria-hidden="true"
+              className="h-12 w-12 md:h-14 md:w-14"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{
+                opacity: [0, 0.9, 0.6, 0.9],
+                scale: [0.8, 1, 0.96, 1],
+              }}
+              exit={{ opacity: 0, scale: 0.85 }}
+              transition={{
+                opacity: { duration: 1.6, times: [0, 0.25, 0.6, 1], repeat: Infinity, ease: "easeInOut" },
+                scale: { duration: 1.6, times: [0, 0.25, 0.6, 1], repeat: Infinity, ease: "easeInOut" },
+              }}
+              style={{ filter: "drop-shadow(0 0 18px rgba(160,110,255,0.55))" }}
+            />
+          </div>
+
+          <ProgressSliver />
         </motion.div>
       )}
     </AnimatePresence>
