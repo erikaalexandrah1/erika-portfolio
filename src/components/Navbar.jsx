@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef, lazy, Suspense } from "react";
+import { motion } from "framer-motion";
+import { useSceneTransition } from "../App";
 
 // Carga diferida: el menú arrastra Three.js (Canvas + OrbitalArcs).
 // Solo se descarga cuando el usuario abre el menú, no en la carga inicial.
@@ -9,6 +11,7 @@ function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuMounted, setMenuMounted] = useState(false);
   const clickSound = useRef(null);
+  const transition = useSceneTransition();
 
   // Cargar el sonido en el montaje
   useEffect(() => {
@@ -28,7 +31,9 @@ function Navbar() {
 
   const handleLogoClick = () => {
     playClickSound();
-    window.location.href = "/";
+    // Navega al home con la misma transición de estrellas del menú.
+    if (transition?.navigateWithTransition) transition.navigateWithTransition("/");
+    else window.location.href = "/";
   };
 
   const handleMenuToggle = () => {
@@ -41,12 +46,18 @@ function Navbar() {
     <>
     <header className="fixed top-0 left-0 w-full z-50 px-6 py-1 flex justify-between items-center text-white shadow-[0_4px_10px_rgba(0,0,0,0.4)] backdrop-blur-sm">
         {/* Logo + nombre */}
-        <div className="flex items-center gap-3 cursor-pointer" onClick={handleLogoClick}>
-          <img src="/logo.svg" alt="Logo" className="h-6" />
-          <span className="text-md font-bold tracking-wide uppercase">
-            Erika Hernández 
+        <motion.div
+          className="flex items-center gap-3 cursor-pointer"
+          onClick={handleLogoClick}
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
+          transition={{ type: "spring", stiffness: 420, damping: 24 }}
+        >
+          <img src="/logo.svg" alt="Erika Hernández logo" className="h-7" />
+          <span className="text-md font-bold tracking-wide uppercase text-white/90 hover:text-white transition-colors">
+            Erika Hernández
           </span>
-        </div>
+        </motion.div>
 
         {/* Botón menú (hamburger / close) */}
         <button

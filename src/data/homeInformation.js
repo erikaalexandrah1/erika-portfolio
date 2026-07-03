@@ -14,6 +14,15 @@ export const SKILLS = [
   "Unity (Metaverse)",
 ];
 
+export const ROLES = ["Full-Stack Developer", "Systems Engineering", "M.D."];
+
+// Fila de confianza (instituciones / experiencia).
+export const TRUST = [
+  "Systems Engineering @ UNIMET",
+  "Data Analyst @ Intelcon System",
+  "M.D. — UCV",
+];
+
 export const STATS = [
   { k: "Students taught", v: "200+" },
   { k: "Scrum teams mentored", v: "15+" },
@@ -32,6 +41,6 @@ export const FEATURED = {
   description:
     "Full-stack e-commerce platform built with Next.js, NestJS, MongoDB, and Mongoose—serving 1,000+ monthly users with secure checkout and real-time inventory management.",
   tags: ["Next.js", "NestJS", "MongoDB", "Mongoose"],
-  caseHref: "/projects#powerleds",
+  liveHref: "https://powerleds.net",
   image: "/images/powerleds.webp"
 };

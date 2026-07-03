@@ -49,7 +49,7 @@ const TIMELINE = [
   },
   {
     year: "2020",
-    title: "Medical Doctor (Cum Laude) • UCV",
+    title: "Medical Doctor • UCV",
     blurb:
       "Graduated 6th out of 169 at UCV, with hands-on training in high-pressure hospital environments under resource-limited conditions. This experience honed precision, adaptability, and decision-making under uncertainty — qualities I now apply to building thoughtful, resilient software systems.",
     tag: "Background",
@@ -89,7 +89,7 @@ export default function About() {
     <div className="relative min-h-screen text-white">
       <Seo
         title="About"
-        description="Systems Engineering student and Software Developer, teaching assistant, and physician (Cum Laude) — bringing precision, empathy and rigor to reliable, human-centered software."
+        description="Systems Engineering student and Software Developer, teaching assistant, and physician — bringing precision, empathy and rigor to reliable, human-centered software."
         path="/about"
       />
       {/* ===== Fondo con tu misma estética ===== */}
@@ -125,7 +125,7 @@ export default function About() {
               <p className="mt-4 max-w-2xl text-white/75">
                 Systems Engineering student and Software Developer specializing in backend clarity and data pipelines. 
                 Teaching assistant in Databases and Software Engineering, recognized for academic excellence. 
-                With a background as a physician (Cum Laude), I bring precision, empathy, and rigor to building reliable, human-centered software systems.
+                With a background as a physician, I bring precision, empathy, and rigor to building reliable, human-centered software systems.
               </p>
             </motion.div>
           </div>

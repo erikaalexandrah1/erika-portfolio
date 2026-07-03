@@ -7,12 +7,20 @@ import useDeferredMount from "../hooks/useDeferredMount";
 
 import BackgroundFX from "../components/HomeComponents/BackgroundFX";
 const HomeCanvas = lazy(() => import("../components/HomeComponents/HomeCanvas"));
-import Pill from "../components/HomeComponents/Pill";
-import CTA from "../components/HomeComponents/CTA";
-import Stat from "../components/HomeComponents/Stat";
-import { MotionInView, fadeSlide } from "../components/HomeComponents/Motion";
 
-import { SKILLS, STATS, CTAS_TOP, FEATURED } from "../data/homeInformation";
+import Button from "../components/ui/Button";
+import Pill from "../components/ui/Pill";
+import Eyebrow from "../components/ui/Eyebrow";
+import Stat from "../components/ui/Stat";
+import { MotionInView } from "../components/HomeComponents/Motion";
+
+import { ROLES, TRUST, SKILLS, STATS, FEATURED } from "../data/homeInformation";
+
+const fade = (delay = 0, y = 18) => ({
+  initial: { y, opacity: 0 },
+  animate: { y: 0, opacity: 1 },
+  transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1], delay },
+});
 
 export default function Home() {
   const show3D = useDeferredMount();
@@ -36,45 +44,67 @@ export default function Home() {
       {/* Overlay */}
       <main className="pointer-events-auto absolute inset-0 z-10 overflow-y-auto">
         {/* HERO */}
-        <section className="pt-28 pb-14">
+        <section className="pt-28 md:pt-32 pb-16">
           <div className="mx-auto w-[min(1100px,92vw)]">
-            <div className="flex flex-wrap items-center gap-2">
-              <Pill delay={0.05}>Full-Stack Developer</Pill>
-              <Pill delay={0.1}>Systems Engineering Student</Pill>
-              <Pill delay={0.15}>MD (Medical Doctor)</Pill>
-            </div>
+            <motion.div {...fade(0)}>
+              <Eyebrow>M.D. → Software Engineer</Eyebrow>
+            </motion.div>
 
             <motion.h1
-              {...fadeSlide(0, 18, 0.7)}
-              className="mt-4 text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight text-white"
+              {...fade(0.05, 20)}
+              className="mt-5 text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight text-white leading-[1.05]"
             >
-              Building clear systems. <br className="hidden md:block" />
+              Building{" "}
+              <span className="bg-[linear-gradient(100deg,#7c8cff,#c07bff,#ff7bbf)] bg-clip-text text-transparent">
+                clear systems
+              </span>
+              . <br className="hidden md:block" />
               Teaching what matters.
             </motion.h1>
 
             <motion.p
-              {...fadeSlide(0.05, 16, 0.6)}
-              className="mt-4 max-w-2xl text-white"
+              {...fade(0.12, 16)}
+              className="mt-5 max-w-2xl text-base md:text-lg text-white/70 leading-relaxed"
             >
-              I design and ship end-to-end solutions across databases, data
-              pipeline, backend architecture, and interaction-focused UIs.
-              I also create classes and resources that make complex topics
-              feel simple.
+              Full-stack developer with a doctor's eye for detail. I design
+              end-to-end products across data, backend and interfaces — and turn
+              complex topics into simple, teachable ideas.
             </motion.p>
 
-            <div className="mt-7 flex flex-wrap gap-3">
-              {CTAS_TOP.map((c) => (
-                <CTA
-                  key={c.label}
-                  href={c.href}
-                  primary={c.primary}
-                  delay={c.delay}
-                  download={c.download}
-                >
-                  {c.label}
-                </CTA>
+            {/* Role pills */}
+            <div className="mt-6 flex flex-wrap items-center gap-2">
+              {ROLES.map((r, i) => (
+                <Pill key={r} delay={0.18 + i * 0.05} dot>
+                  {r}
+                </Pill>
               ))}
             </div>
+
+            {/* CTAs con jerarquía */}
+            <motion.div {...fade(0.28)} className="mt-8 flex flex-wrap items-center gap-3">
+              <Button to="/projects" variant="primary" size="lg">
+                View my work →
+              </Button>
+              <Button href="/cv.pdf" download="Erika-Hernandez-CV.pdf" variant="secondary" size="lg">
+                Download CV
+              </Button>
+              <Button to="/contact" variant="ghost" size="lg">
+                Get in touch
+              </Button>
+            </motion.div>
+
+            {/* Fila de confianza */}
+            <motion.div
+              {...fade(0.36)}
+              className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-white/45"
+            >
+              {TRUST.map((t, i) => (
+                <span key={t} className="flex items-center gap-3">
+                  {i > 0 && <span className="text-white/20">·</span>}
+                  {t}
+                </span>
+              ))}
+            </motion.div>
 
             {/* Stats */}
             <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -86,12 +116,12 @@ export default function Home() {
         </section>
 
         {/* SKILLS */}
-        <section className="pb-12">
+        <section className="pb-14">
           <div className="mx-auto w-[min(1100px,92vw)]">
-            <MotionInView as="h2" className="text-sm uppercase tracking-wider text-white ">
-              Core Stack
+            <MotionInView>
+              <Eyebrow>Core Stack</Eyebrow>
             </MotionInView>
-            <div className="mt-3 flex flex-wrap gap-2">
+            <div className="mt-4 flex flex-wrap gap-2">
               {SKILLS.map((t, i) => (
                 <Pill key={t} delay={0.02 * i}>
                   {t}
@@ -104,26 +134,23 @@ export default function Home() {
         {/* FEATURED PROJECT */}
         <section className="pb-16">
           <div className="mx-auto w-[min(1100px,92vw)]">
-            {/* Si prefieres, reemplaza el bloque por <FeaturedCard {...FEATURED} /> */}
-            <MotionInView className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur p-6 md:p-8 overflow-hidden">
+            <MotionInView className="group relative rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur p-6 md:p-8 overflow-hidden transition-colors hover:border-white/20">
               <div
-                className="pointer-events-none absolute inset-0"
+                className="pointer-events-none absolute inset-0 opacity-70"
                 style={{
                   background:
-                    "radial-gradient(700px 300px at 20% 20%, rgba(88,113,255,0.12), transparent 60%), radial-gradient(600px 280px at 80% 30%, rgba(255,88,168,0.10), transparent 55%), radial-gradient(600px 280px at 50% 90%, rgba(0,255,200,0.08), transparent 55%)",
+                    "radial-gradient(700px 300px at 20% 20%, rgba(88,113,255,0.14), transparent 60%), radial-gradient(600px 280px at 80% 30%, rgba(255,88,168,0.12), transparent 55%), radial-gradient(600px 280px at 50% 90%, rgba(0,255,200,0.08), transparent 55%)",
                   mixBlendMode: "screen",
                 }}
                 aria-hidden
               />
               <div className="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-10 relative z-[1]">
                 <div className="flex-1">
-                  <div className="text-xs text-white uppercase tracking-wider">
-                    Featured Project
-                  </div>
-                  <h3 className="mt-1 text-2xl md:text-3xl font-extrabold text-white">
+                  <Eyebrow>Featured Project</Eyebrow>
+                  <h3 className="mt-3 text-2xl md:text-3xl font-extrabold text-white">
                     {FEATURED.title}
                   </h3>
-                  <p className="mt-2 text-white">
+                  <p className="mt-2 text-white/70 leading-relaxed">
                     {FEATURED.description}
                   </p>
                   <div className="mt-4 flex flex-wrap gap-2">
@@ -131,22 +158,22 @@ export default function Home() {
                       <Pill key={t}>{t}</Pill>
                     ))}
                   </div>
+                  <div className="mt-6">
+                    <Button href={FEATURED.liveHref} variant="secondary">
+                      Visit live site →
+                    </Button>
+                  </div>
                 </div>
-                
-                <div className="aspect-[16/10] rounded-2xl border border-white/10 bg-black/30 overflow-hidden">
-                    {FEATURED.image ? (
-                        <img
-                        src={FEATURED.image}
-                        alt={`Preview of ${FEATURED.title}`}
-                        className="w-full h-full object-cover"
-                        />
-                    ) : (
-                        <div className="grid place-items-center text-white h-full w-full">
-                        Preview / thumbnail
-                        </div>
-                    )}
+
+                <div className="w-full md:w-[42%] aspect-[16/10] rounded-2xl border border-white/10 bg-black/30 overflow-hidden">
+                  <img
+                    src={FEATURED.image}
+                    alt={`Preview of ${FEATURED.title}`}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                    loading="lazy"
+                  />
                 </div>
-            </div>
+              </div>
             </MotionInView>
           </div>
         </section>
@@ -154,17 +181,19 @@ export default function Home() {
         {/* MINI CTA */}
         <section className="pb-24">
           <div className="mx-auto w-[min(1100px,92vw)] text-center">
-            <MotionInView as="h3" className="text-xl md:text-2xl font-extrabold text-white">
+            <MotionInView as="h3" className="text-2xl md:text-3xl font-extrabold text-white">
               Looking for clarity and speed?
             </MotionInView>
-            <MotionInView as="p" className="mt-2 text-white max-w-2xl mx-auto">
-              I’m happy to walk through relevant projects or share materials tailored to your team.
+            <MotionInView as="p" className="mt-2 text-white/60 max-w-2xl mx-auto">
+              I'm happy to walk through relevant projects or share materials tailored to your team.
             </MotionInView>
-            <div className="mt-6 flex justify-center gap-3">
-              <CTA href="/contact" primary>
+            <div className="mt-7 flex justify-center gap-3">
+              <Button to="/contact" variant="primary" size="lg">
                 Get in touch →
-              </CTA>
-              <CTA href="/resources">See classes</CTA>
+              </Button>
+              <Button to="/resources" variant="secondary" size="lg">
+                See classes
+              </Button>
             </div>
           </div>
         </section>
