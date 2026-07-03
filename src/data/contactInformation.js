@@ -9,7 +9,7 @@ export const CONTACT_BG = {
 export const CONTACT_EMAIL = "erika.zurilla@gmail.com";
 
 export const CONTACT_SOCIALS = [
-  { label: "LinkedIn", href: "www.linkedin.com/in/erikaalexandrah" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/erikaalexandrah" },
   { label: "GitHub", href: "https://github.com/erikaalexandrah" },
   { label: "YouTube", href: "https://www.youtube.com/@erikaalexandrah" },
 ];

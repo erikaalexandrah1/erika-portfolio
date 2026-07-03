@@ -87,21 +87,24 @@ export default function ContactForm({
         />
       </div>
 
-      <div className="mt-6 flex items-center gap-3">
-        <MagneticButton type="submit" variant="primary" disabled={status === "sending"}>
-          {status === "sending" ? "Sending…" : "Send message"}
+      <div className="mt-6 flex flex-wrap items-center gap-3">
+        <MagneticButton type="submit" variant="primary" disabled={status === "opening"}>
+          {status === "opening" ? "Opening your email app…" : "Send via email →"}
         </MagneticButton>
-        {status === "sent" && (
-          <motion.span initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="text-sm text-emerald-300/80">
-            Processing...
-          </motion.span>
-        )}
-        {status === "error" && (
-          <motion.span initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="text-sm text-red-300/80">
-            Couldn’t copy — try manual.
+        {status === "opened" && (
+          <motion.span
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-sm text-emerald-300/80"
+            role="status"
+          >
+            Draft ready in your email app — hit send there to finish.
           </motion.span>
         )}
       </div>
+      <p className="mt-3 text-xs text-white/45">
+        This opens your email app with the message pre-filled — nothing is sent from this page.
+      </p>
     </motion.form>
   );
 }

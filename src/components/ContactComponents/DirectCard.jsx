@@ -1,5 +1,5 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import MagneticButton from "./MagneticButton";
 import SocialLinks from "./SocialLinks";
 
@@ -11,7 +11,22 @@ const fade = (d = 0) => ({
   transition: { duration: 0.6, ease: EASE, delay: d },
 });
 
-export default function DirectCard({ email, onCopy, socials }) {
+export default function DirectCard({ email, socials }) {
+  // Estado propio del copiado — independiente del status del formulario,
+  // que vive en una card distinta y no tiene relación con esta acción.
+  const [copyState, setCopyState] = useState("idle"); // idle | copied | error
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(email);
+      setCopyState("copied");
+    } catch {
+      setCopyState("error");
+    } finally {
+      setTimeout(() => setCopyState("idle"), 1800);
+    }
+  };
+
   return (
     <motion.div
       className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur p-6 md:p-8"
@@ -28,8 +43,36 @@ export default function DirectCard({ email, onCopy, socials }) {
         </code>
     </div>
 
-    <div className="mt-3 flex flex-row gap-3">
-        <MagneticButton onClick={onCopy}>Copy</MagneticButton>
+    <div className="mt-3 flex flex-row items-center gap-3">
+        <MagneticButton onClick={handleCopy}>
+          {copyState === "copied" ? "Copied ✓" : "Copy"}
+        </MagneticButton>
+        <AnimatePresence mode="wait">
+          {copyState === "copied" && (
+            <motion.span
+              key="copied"
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.2 }}
+              className="text-sm text-emerald-300/80"
+            >
+              Email copied to clipboard
+            </motion.span>
+          )}
+          {copyState === "error" && (
+            <motion.span
+              key="error"
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.2 }}
+              className="text-sm text-red-300/80"
+            >
+              Couldn’t copy — select the text manually.
+            </motion.span>
+          )}
+        </AnimatePresence>
     </div>
 
       <div className="mt-8 h-px bg-white/10" />

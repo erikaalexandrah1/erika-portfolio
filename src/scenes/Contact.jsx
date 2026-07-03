@@ -22,12 +22,15 @@ export default function Contact() {
     subject: "",
     message: "",
   });
-  const [status, setStatus] = useState("idle"); // idle | sending | sent | error
+  const [status, setStatus] = useState("idle"); // idle | opening | opened
   const show3D = useDeferredMount();
 
+  // Nota: no hay backend/servicio de email conectado — este formulario abre
+  // el cliente de correo del visitante (mailto:) con un borrador ya redactado;
+  // el propio visitante debe darle "enviar" ahí. El status/copy refleja eso.
   const handleSubmit = (e) => {
     e.preventDefault();
-    setStatus("sending");
+    setStatus("opening");
 
     const subject = encodeURIComponent(`Contact: ${form.topic} — ${form.name}`);
     const body = encodeURIComponent(
@@ -36,21 +39,10 @@ export default function Contact() {
     const href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
 
     setTimeout(() => {
-      setStatus("sent");
       window.location.href = href;
-      setTimeout(() => setStatus("idle"), 2000);
-    }, 500);
-  };
-
-  const copyEmail = async () => {
-    try {
-      await navigator.clipboard.writeText(CONTACT_EMAIL);
-      setStatus("sent");
-      setTimeout(() => setStatus("idle"), 1500);
-    } catch {
-      setStatus("error");
-      setTimeout(() => setStatus("idle"), 1500);
-    }
+      setStatus("opened");
+      setTimeout(() => setStatus("idle"), 4000);
+    }, 400);
   };
 
   return (
@@ -83,7 +75,6 @@ export default function Contact() {
             <div className="lg:col-span-1">
               <DirectCard
                 email={CONTACT_EMAIL}
-                onCopy={copyEmail}
                 socials={CONTACT_SOCIALS}
               />
             </div>
