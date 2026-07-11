@@ -49,7 +49,7 @@ export const PROJECTS = [
     blurb: "React and Next.js front-end with a NestJS REST API backend, integrated with TMDB and Neo4J AuraDB for recommendations.",
     tag: "Backend",
     meta: "React • Next.js 14 • NestJS • Neo4J AuraDB • TMDB API",
-    href: "https://unimet-buzzflix.vercel.app/",
+    href: "https://buzzflix.titranx.com/",
     image: "/images/buzzflix-bg.webp",
   },
   {

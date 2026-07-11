@@ -250,27 +250,6 @@ export default function SceneTransition({
             <Starfield color={starColor} />
           </Canvas>
 
-          {/* ===== Marca central: ancla visual con pulso de marca ===== */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <motion.img
-              src="/logo.svg"
-              alt=""
-              aria-hidden="true"
-              className="h-12 w-12 md:h-14 md:w-14"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{
-                opacity: [0, 0.9, 0.6, 0.9],
-                scale: [0.8, 1, 0.96, 1],
-              }}
-              exit={{ opacity: 0, scale: 0.85 }}
-              transition={{
-                opacity: { duration: 1.6, times: [0, 0.25, 0.6, 1], repeat: Infinity, ease: "easeInOut" },
-                scale: { duration: 1.6, times: [0, 0.25, 0.6, 1], repeat: Infinity, ease: "easeInOut" },
-              }}
-              style={{ filter: "drop-shadow(0 0 18px rgba(160,110,255,0.55))" }}
-            />
-          </div>
-
           <ProgressSliver />
         </motion.div>
       )}
